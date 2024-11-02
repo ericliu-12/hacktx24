@@ -1,15 +1,16 @@
 import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
-import { Press_Start_2P } from "next/font/google"
+import { Press_Start_2P } from "next/font/google";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
 const pressStart = Press_Start_2P({
-    display: 'swap',
-    weight: '400'
-})
+  display: "swap",
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create T3 App",
