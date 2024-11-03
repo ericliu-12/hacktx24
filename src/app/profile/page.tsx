@@ -6,11 +6,12 @@ import { useSession } from "next-auth/react";
 import { updateUserAvatar } from "../api/avatars/route";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
+import useSound from "use-sound";
 
 export default function Page() {
   const [avatar, setAvatar] = useState();
   const { data: session } = useSession();
-  // const [backSound] = useSound("/audio/select.wav");
+  const [backSound] = useSound("/audio/select.wav");
 
   // const avatarSelect = async (avatar: [string, string]) => {
   //   const userId = session?.user?.id;
@@ -37,7 +38,7 @@ export default function Page() {
         </div>
         <Link href="/">
           <div
-            // onClick={() => backSound()}
+            onClick={() => backSound()}
             className="fixed left-6 top-6 z-50 hover:translate-y-1"
           >
             Back
