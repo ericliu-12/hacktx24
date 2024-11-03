@@ -1,8 +1,8 @@
 import "~/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
 import { Press_Start_2P } from "next/font/google";
 import { type Metadata } from "next";
+import localFont from "next/font/local"
 
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -11,6 +11,9 @@ const pressStart = Press_Start_2P({
   weight: "400",
   subsets: ["latin"],
 });
+
+const ka = localFont({
+  src: "../../public/fonts/ka1.ttf"})
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -22,7 +25,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${pressStart.className}`}>
+    <html lang="en" className={`${ka.className}`}>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
