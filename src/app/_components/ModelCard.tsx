@@ -1,46 +1,18 @@
 import ModelViewer from "./StaticModelViewer";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
 import useSound from "use-sound";
 
 interface Props {
   name: string;
   path: string;
-  setAvatar: (avatar: [string, string]) => void;
+  setAvatar: any;
 }
 
 export default function ModelCard({ name, path, setAvatar }: Props) {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
-  const [selectSound] = useSound('/audio/select2.wav')
-
-  // useEffect(() => {
-  //   const fetchUserId = async () => {
-  //     const session = await getSession();
-  //     if (session?.user?.email) {
-  //       try {
-  //         const response = await fetch("/api/getUserIdByEmail", {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify({ email: session.user.email }),
-  //         });
-  //         const data = await response.json();
-  //         if (response.ok) {
-  //           setUserId(data.userId);
-  //           console.log("Fetched userId:", data.userId);
-  //         } else {
-  //           console.error("Error fetching user ID:", data.error);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching user ID:", error);
-  //       }
-  //     } else {
-  //       console.error("Session email not found");
-  //     }
-  //   };
-
-  //   fetchUserId();
-  // }, []);
+  const [selectSound] = useSound("/audio/select2.wav");
 
   useEffect(() => {
     if (!userId) {
@@ -108,9 +80,13 @@ export default function ModelCard({ name, path, setAvatar }: Props) {
           handleSaveAvatar();
         }}
       >
-        <div className="hover:-translate-y-4 hover:cursor-pointer">
-          <ModelViewer modelPath={path} />
-        </div>
+        {loading ? (
+          <div>Loading model...</div>
+        ) : (
+          <div className="hover:-translate-y-4 hover:cursor-pointer">
+            <ModelViewer modelPath={path} />
+          </div>
+        )}
         <button className="hover:translate-y-1">{name}</button>
       </div>
     </>

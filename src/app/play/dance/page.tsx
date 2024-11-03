@@ -171,6 +171,18 @@ export default function Page() {
             </div>
           </Carousel>
 
+          <MainComponent setUserPose={setUserPose} setHandPose={setUserPose} />
+        </div>
+        <VideoPlayer
+          selected={"/songs/hot_to_go.mp4"}
+          setVideoPose={(pose) => {
+            if (isTracking) setVideoPose(pose); // Only set video pose when tracking is active
+          }}
+          similarityScore={similarityScore}
+          isTracking={isTracking} // Pass tracking state as a prop
+          setIsTracking={setIsTracking} // Pass setIsTracking to control tracking from VideoPlayer
+        />
+      </div>
           <p>{songs[current]?.title}</p>
           <p>{songs[current]?.artist}</p>
 

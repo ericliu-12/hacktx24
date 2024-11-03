@@ -8,25 +8,24 @@ const VRMDisplay = dynamic(() => import("./LoadModel"));
 
 interface MainComponentProps {
   setUserPose: (landmarks: any) => void;
+  setHandPose: (landmarks: any) => void;
 }
 
-export const MainComponent = ({ setUserPose }: MainComponentProps) => {
+export const MainComponent = ({
+  setUserPose,
+  setHandPose,
+}: MainComponentProps) => {
   const [landmarks, setLandmarks] = useState<any>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const vrmContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="flex">
       <HolisticModel
         setLandmarks={setLandmarks}
         setPoseLandmarks={setUserPose}
+        setHandLandmarks={setHandPose}
       />
-      <div ref={vrmContainerRef} />
-      <VRMDisplay
-        landmarks={landmarks}
-        videoRef={videoRef}
-        containerRef={vrmContainerRef}
-      />
+      <VRMDisplay landmarks={landmarks} videoRef={videoRef} />
     </div>
   );
 };

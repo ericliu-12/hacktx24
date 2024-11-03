@@ -10,45 +10,88 @@ type Letter = {
   hovered: boolean;
 };
 
-export default function WordHuntGame() {
+const ScoreMap: { [key: number]: number } = {
+  3: 100,
+  4: 400,
+  5: 800,
+  6: 1400,
+  7: 1800,
+  8: 2200,
+};
+
+const letterFrequencies: { [key: string]: number } = {
+  A: 9,
+  B: 2,
+  C: 2,
+  D: 4,
+  E: 12,
+  F: 2,
+  G: 3,
+  H: 2,
+  I: 9,
+  J: 1,
+  K: 1,
+  L: 4,
+  M: 2,
+  N: 6,
+  O: 8,
+  P: 2,
+  Q: 1,
+  R: 6,
+  S: 4,
+  T: 6,
+  U: 4,
+  V: 2,
+  W: 2,
+  X: 1,
+  Y: 2,
+  Z: 1,
+};
+
+const createWeightedLetterArray = (): string[] => {
+  const weightedLetters: string[] = [];
+  for (const letter in letterFrequencies) {
+    for (let i = 0; i < letterFrequencies[letter]!; i++) {
+      weightedLetters.push(letter);
+    }
+  }
+  return weightedLetters;
+};
+
+interface Props {
+  handPose: any;
+}
+
+export default function WordHuntGame({ handPose }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [handLandmarker, setHandLandmarker] = useState<any>(null);
   const [grid, setGrid] = useState<Letter[][]>([]);
   const [selectedLetters, setSelectedLetters] = useState<Letter[]>([]);
-  const [handState, setHandState] = useState("Open");
+  const [score, setScore] = useState(0);
 
   const isSelectingRef = useRef(false);
   const selectedRef = useRef<Letter[]>([]);
+  const completeRef = useRef<string[]>([]);
 
   useEffect(() => {
     selectedRef.current = selectedLetters;
   }, [selectedLetters]);
 
-  const loadHandLandmarker = async () => {
-    const handsModule = await import("@mediapipe/hands");
-    const hands = new handsModule.Hands({
-      locateFile: (file) =>
-        `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
-    });
-    hands.setOptions({
-      maxNumHands: 1,
-      modelComplexity: 1,
-      minDetectionConfidence: 0.7,
-      minTrackingConfidence: 0.7,
-    });
-    hands.onResults(onResults);
-    setHandLandmarker(hands);
-  };
+  useEffect(() => {
+    onResults(handPose);
+  }, [handPose]);
 
   const initializeGrid = () => {
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const weightedLetters = createWeightedLetterArray();
     const gridArray: Letter[][] = [];
+
     for (let i = 0; i < 4; i++) {
       const row: Letter[] = [];
       for (let j = 0; j < 4; j++) {
+        const randomIndex = Math.floor(Math.random() * weightedLetters.length);
+        const letter = weightedLetters[randomIndex];
         row.push({
-          letter: alphabet[Math.floor(Math.random() * alphabet.length)],
+          letter: letter!,
           row: i,
           col: j,
           selected: false,
@@ -60,7 +103,7 @@ export default function WordHuntGame() {
     setGrid(gridArray);
   };
 
-  function onResults(results: any) {
+  async function onResults(results: any) {
     if (canvasRef.current) {
       const canvasCtx = canvasRef.current.getContext("2d");
       if (canvasCtx) {
@@ -71,24 +114,23 @@ export default function WordHuntGame() {
           canvasRef.current.height,
         );
 
-        if (
-          results.multiHandLandmarks &&
-          results.multiHandLandmarks.length > 0
-        ) {
-          const handLandmarks = results.multiHandLandmarks[0];
-          const middle = handLandmarks[9];
+        if (results) {
+          const middle = results[9];
 
-          let handX =
-            canvasRef.current.width - middle.x * canvasRef.current.width;
-          let handY = middle.y * canvasRef.current.height;
+          let handX = 0;
+          let handY = 0;
+
+          if (middle) {
+            handX =
+              canvasRef.current.width - middle.x * canvasRef.current.width;
+            handY = middle.y * canvasRef.current.height;
+          }
 
           // Lock position when fist is closed
-          const isFistClosed = detectFistClosed(handLandmarks);
+          const isFistClosed = detectFistClosed(results);
           if (isFistClosed) {
-            setHandState("Closed");
             isSelectingRef.current = true;
           } else {
-            setHandState("Open");
             isSelectingRef.current = false;
           }
 
@@ -103,7 +145,14 @@ export default function WordHuntGame() {
 
           if (!isFistClosed) {
             if (selectedRef.current.length >= 3) {
-              validateWord();
+              const word = selectedRef.current
+                .map((letter) => letter.letter)
+                .join("");
+              const valid = await validateWord(word);
+              if (valid && !completeRef.current.includes(word)) {
+                setScore((prevScore) => prevScore + ScoreMap[word.length]!);
+                completeRef.current.push(word);
+              }
             }
             setSelectedLetters([]);
           }
@@ -117,14 +166,19 @@ export default function WordHuntGame() {
     const thumbTip = landmarks[4];
     const pinkyTip = landmarks[20];
 
-    const distanceThumbToIndex = Math.sqrt(
-      Math.pow(thumbTip.x - indexTip.x, 2) +
-        Math.pow(thumbTip.y - indexTip.y, 2),
-    );
-    const distancePinkyToIndex = Math.sqrt(
-      Math.pow(pinkyTip.x - indexTip.x, 2) +
-        Math.pow(pinkyTip.y - indexTip.y, 2),
-    );
+    let distanceThumbToIndex = 1;
+    let distancePinkyToIndex = 1;
+
+    if (indexTip && thumbTip && pinkyTip) {
+      distanceThumbToIndex = Math.sqrt(
+        Math.pow(thumbTip.x - indexTip.x, 2) +
+          Math.pow(thumbTip.y - indexTip.y, 2),
+      );
+      distancePinkyToIndex = Math.sqrt(
+        Math.pow(pinkyTip.x - indexTip.x, 2) +
+          Math.pow(pinkyTip.y - indexTip.y, 2),
+      );
+    }
 
     return distanceThumbToIndex < 0.15 && distancePinkyToIndex < 0.15;
   };
@@ -143,10 +197,10 @@ export default function WordHuntGame() {
 
           // Determine if the hand coordinates (x, y) are within the cell's bounding box
           const isHovered =
-            x >= cellX &&
-            x < cellX + cellWidth &&
-            y >= cellY &&
-            y < cellY + cellHeight;
+            x >= cellX + 20 &&
+            x < cellX + cellWidth - 20 &&
+            y >= cellY + 20 &&
+            y < cellY + cellHeight - 20;
 
           if (isHovered && isSelectingRef.current) {
             // Add letter to selectedLetters if it's not already included
@@ -190,63 +244,22 @@ export default function WordHuntGame() {
   };
 
   // Example usage
-  const validateWord = async () => {
-    const word = selectedRef.current.map((letter) => letter.letter).join("");
+  const validateWord = async (word: string) => {
     const isValidWord = await checkIfWordExists(word);
-    if (isValidWord) {
-      alert(`${word} is a valid word!`);
-    } else {
-      alert(`${word} is not a valid word.`);
-    }
-  };
-
-  const finalizeWord = () => {
-    const word = selectedLetters.join("");
-    alert(`You formed the word: ${word}`);
-    resetGame();
-  };
-
-  const resetGame = () => {
-    setSelectedLetters([]);
-    initializeGrid();
+    return isValidWord;
   };
 
   useEffect(() => {
-    loadHandLandmarker();
     initializeGrid();
   }, []);
 
-  useEffect(() => {
-    if (videoRef.current && handLandmarker) {
-      const camera = new cam.Camera(videoRef.current, {
-        onFrame: async () => {
-          await handLandmarker.send({
-            image: videoRef.current as HTMLVideoElement,
-          });
-        },
-        width: 640,
-        height: 480,
-      });
-      camera.start();
-    }
-  }, [handLandmarker]);
-
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
-      <h1>Word Hunt - Hand Controlled</h1>
-      <p>
-        Selected Letters:{" "}
-        {selectedLetters.map((letter) => letter.letter).join("")}
-      </p>
-      <p>Hand State: {handState}</p>
+    <div className="flex h-screen w-full flex-col items-center justify-center">
+      <h1 className="m-6">Word Hunt</h1>
+      <h1>Selected... {selectedLetters.map((cell) => cell.letter).join("")}</h1>
 
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <video
-          ref={videoRef}
-          style={{ width: "320px", height: "240px", border: "1px solid black" }}
-        />
+        <video ref={videoRef} hidden />
       </div>
 
       <div
@@ -264,14 +277,7 @@ export default function WordHuntGame() {
           style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
         />
 
-        <div
-          style={{
-            backgroundColor: "#f0f0f0",
-            padding: "10px",
-            position: "relative",
-            zIndex: 0,
-          }}
-        >
+        <div>
           {grid.map((row, rowIndex) => (
             <div
               key={rowIndex}
@@ -302,6 +308,17 @@ export default function WordHuntGame() {
               ))}
             </div>
           ))}
+        </div>
+        <div className="mt-10 flex items-center justify-center gap-10">
+          <div className="flex w-[200px] flex-col items-center justify-center">
+            <h2>Found Words</h2>
+            <p>{completeRef.current.join(", ")}</p>
+          </div>
+
+          <div className="flex flex-col items-center justify-center">
+            <h2>Score</h2>
+            <p>{score}</p>
+          </div>
         </div>
       </div>
     </div>
