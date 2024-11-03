@@ -5,12 +5,12 @@ import ModelCard from "../_components/ModelCard";
 import { useSession } from "next-auth/react";
 import { updateUserAvatar } from "../api/avatars/route";
 import { useState } from "react";
-import useSound from "use-sound";
+import { Button } from "~/components/ui/button";
 
 export default function Page() {
   const [avatar, setAvatar] = useState();
   const { data: session } = useSession();
-  const [backSound] = useSound('/audio/select.wav')
+  // const [backSound] = useSound("/audio/select.wav");
 
   // const avatarSelect = async (avatar: [string, string]) => {
   //   const userId = session?.user?.id;
@@ -35,6 +35,14 @@ export default function Page() {
         <div>
           <h1 className="mb-4 text-xl">Set up your profile</h1>
         </div>
+        <Link href="/">
+          <div
+            // onClick={() => backSound()}
+            className="fixed left-6 top-6 z-50 hover:translate-y-1"
+          >
+            Back
+          </div>
+        </Link>
         <div className="flex flex-col items-center justify-center">
           <h1 className="mb-4">Nice choice!</h1>
           <div className="flex">
@@ -52,7 +60,7 @@ export default function Page() {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center text-left">
       <Link href="/">
-        <div onClick={() => backSound()} className="fixed left-6 top-6 hover:translate-y-1">Back</div>
+        <div className="fixed left-6 top-6 hover:translate-y-1">Back</div>
       </Link>
 
       <div>
