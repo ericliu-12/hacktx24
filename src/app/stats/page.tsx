@@ -40,9 +40,12 @@ export default function Stats() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: id }),
             })
-            const statsData = await statsResponse.json()
-            console.log(statsData)
-            setStats(statsData)
+            if (statsResponse.status != 200) {
+                setStats([])
+            } else {
+                const statsData = await statsResponse.json()
+                setStats(statsData)
+            }
             setLoading(false)
         }
         fetchStats()
@@ -64,11 +67,12 @@ export default function Stats() {
 
 
             {isLoading ? <p>Loading...</p> :
-                <div>
+                stats ? <div>
                     <p>Personal Best - {Math.max(...stats.map(stat => parseFloat(stat.average_score))).toFixed(2)} secs</p>
                     <p>Games Played - {Object.keys(stats).length}</p>
                     <p>Longest Dance Duration - {Math.max(...stats.map(stat => stat.dance_duration.seconds))}</p>
-                </div>}
+                </div> :
+                    <p>You don't have enough playtime!</p>}
         </div>
     )
 }
