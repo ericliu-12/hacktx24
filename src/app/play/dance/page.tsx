@@ -5,22 +5,28 @@ import { useState, useEffect } from "react";
 import { MainComponent } from "~/app/_components/Main";
 import VideoPlayer from "~/app/_components/VideoPlayer";
 import ErrorBoundary from "~/app/_components/ErrorBoundary";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "~/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "~/components/ui/carousel";
 import Image from "next/image";
 import useSound from "use-sound";
 
 export default function Page() {
   const [userPose, setUserPose] = useState<any[]>([]);
+  const [handPose, setHandPose] = useState<any[]>([]);
   const [videoPose, setVideoPose] = useState<any[]>([]);
   const [similarityScore, setSimilarityScore] = useState<number | null>(null);
-  const [isHovered, setHovered] = useState(false);
   const [isTracking, setIsTracking] = useState(false);
-  const [songSelected, hasSongSelected] = useState(false)
-  const [selectSound] = useSound('/audio/select2.wav')
-  const [playSound] = useSound('/audio/play.wav')
-  const [backSound] = useSound('/audio/select.wav')
-  const [current, setCurrent] = useState(0)
-  const [songLocation, setSongLocation] = useState("")
+  const [songSelected, hasSongSelected] = useState(false);
+  const [selectSound] = useSound("/audio/select2.wav");
+  const [playSound] = useSound("/audio/play.wav");
+  const [backSound] = useSound("/audio/select.wav");
+  const [current, setCurrent] = useState(0);
+  const [songLocation, setSongLocation] = useState("");
 
   // Calculate similarity between userPose and videoPose
   const calculateSimilarity = (pose1: any[], pose2: any[]) => {
@@ -74,21 +80,21 @@ export default function Page() {
       location: "/songs/hot_to_go.mp4",
       title: "HOT TO GO!",
       artist: "Chappell Roan",
-      cover: "/covers/hot_to_go.jpg"
+      cover: "/covers/hot_to_go.jpg",
     },
     {
       location: "/songs/espresso.mp4",
       title: "Espresso",
       artist: "Sabrina Carpenter",
-      cover: "/covers/espresso.png"
+      cover: "/covers/espresso.png",
     },
     {
       location: "/songs/apt.mp4",
       title: "APT.",
       artist: "Rose and Bruno Mars",
-      cover: "/covers/apt.png"
+      cover: "/covers/apt.png",
     },
-  ]
+  ];
 
   return (
     <ErrorBoundary>
@@ -101,11 +107,13 @@ export default function Page() {
         </div>
       </Link>
 
-      {songSelected
-        ? <div className="flex w-full overflow-hidden">
+      {songSelected ? (
+        <div className="flex w-full overflow-hidden">
           <div className="flex flex-col">
-
-            <MainComponent setUserPose={setUserPose} />
+            <MainComponent
+              setUserPose={setUserPose}
+              setHandPose={setHandPose}
+            />
           </div>
           <VideoPlayer
             selected={songLocation}
@@ -117,10 +125,11 @@ export default function Page() {
             setIsTracking={setIsTracking} // Pass setIsTracking to control tracking from VideoPlayer
           />
         </div>
-        : <div className="w-screen h-screen flex flex-col justify-center items-center">
+      ) : (
+        <div className="flex h-screen w-screen flex-col items-center justify-center">
           <h1 className="text-3xl">Select a song</h1>
 
-          <Carousel className="scale-90 relative mb-10 mt-10 h-auto w-[25vw]">
+          <Carousel className="relative mb-10 mt-10 h-auto w-[25vw] scale-90">
             <Image
               src="/bottom_left_thumbnail_frame.png"
               alt="Bottom left thumbnail frame"
@@ -171,18 +180,6 @@ export default function Page() {
             </div>
           </Carousel>
 
-          <MainComponent setUserPose={setUserPose} setHandPose={setUserPose} />
-        </div>
-        <VideoPlayer
-          selected={"/songs/hot_to_go.mp4"}
-          setVideoPose={(pose) => {
-            if (isTracking) setVideoPose(pose); // Only set video pose when tracking is active
-          }}
-          similarityScore={similarityScore}
-          isTracking={isTracking} // Pass tracking state as a prop
-          setIsTracking={setIsTracking} // Pass setIsTracking to control tracking from VideoPlayer
-        />
-      </div>
           <p>{songs[current]?.title}</p>
           <p>{songs[current]?.artist}</p>
 
@@ -202,8 +199,8 @@ export default function Page() {
               style={{ width: "20vw", height: "auto" }}
             />
           </button>
-
-        </div>}
+        </div>
+      )}
     </ErrorBoundary>
   );
 }
