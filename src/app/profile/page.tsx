@@ -61,7 +61,7 @@ export default function Page() {
       <div className="flex flex-col">
         <h1 className="mb-4">Choose your avatar</h1>
         <div className="flex">
-          <ModelCard
+ard
             name="Suki"
             path="/models/suki.vrm"
             setAvatar={setAvatar}
