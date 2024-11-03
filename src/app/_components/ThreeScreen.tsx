@@ -15,13 +15,13 @@ function easeInOutSine(t: number) {
 
 interface ThreeSceneProps {
   startAnim: boolean;
-  setStartAnim: (value: boolean) => void;
+  leaderAnim: boolean;
   route: string;
 }
 
 const ThreeScene: React.FC<ThreeSceneProps> = ({
   startAnim,
-  setStartAnim,
+  leaderAnim,
   route,
 }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -97,6 +97,45 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
           easeInOutSine(progress),
         );
       }
+
+      rendererRef.current?.render(sceneRef.current, cameraRef.current!);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setTimeout(() => {
+          router.push(route);
+        }, 1000);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  };
+
+  const animateLeaderboards = () => {
+    if (!cameraRef.current) return;
+
+    const duration = 1.5; // Animation duration in seconds
+    const startTime = performance.now();
+    const initialPosition = cameraRef.current.position.clone();
+    const targetPosition = new THREE.Vector3(-0.8, 1.4, -6.3);
+    const initialRotationX = cameraRef.current.rotation.x;
+    const targetRotationX = -0.45;
+
+    function animate(time: number) {
+      const elapsed = (time - startTime) / 1000;
+      const progress = Math.min(elapsed / duration, 1);
+
+      cameraRef.current!.position.lerpVectors(
+        initialPosition,
+        targetPosition,
+        easeInOutSine(progress),
+      );
+      cameraRef.current!.rotation.x = lerp(
+        initialRotationX,
+        targetRotationX,
+        easeInOutSine(progress),
+      );
 
       rendererRef.current?.render(sceneRef.current, cameraRef.current!);
 
@@ -189,6 +228,13 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       animateCamera();
     }
   }, [startAnim]);
+
+  useEffect(() => {
+    if (leaderAnim && cabinetRef.current && !isAnimatingRef.current) {
+      isAnimatingRef.current = true;
+      animateLeaderboards();
+    }
+  }, [leaderAnim]);
 
   return <div className="h-[100vh] w-[100vw]" ref={mountRef} />;
 };

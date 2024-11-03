@@ -9,6 +9,7 @@ import useSound from 'use-sound'
 
 export default function HomeWrapper({ session }: { session: Session | null }) {
   const [startAnim, setStartAnim] = useState<boolean>(false);
+  const [leaderAnim, setLeaderAnim] = useState<boolean>(false);
   const [route, setRoute] = useState("");
   const [shown, setShown] = useState(true);
   const [playSound] = useSound('/audio/play.wav')
@@ -24,7 +25,7 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
     <>
       <ThreeScene
         startAnim={startAnim}
-        setStartAnim={setStartAnim}
+        leaderAnim={leaderAnim}
         route={route}
       />
 
@@ -56,11 +57,11 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
                 }} className="hover:translate-y-1">Stats</button>
                 <button onClick={() => {
                   selectSound();
+                  setLeaderAnim(true);
                 }} className="hover:translate-y-1">Leaderboards</button>
                 <button
                   onClick={() => {
                     selectSound();
-                    setStartAnim(true);
                     setRoute("/profile");
                   }}
                   className="hover:translate-y-1"
