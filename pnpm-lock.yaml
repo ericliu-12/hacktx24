@@ -14,15 +14,24 @@ importers:
       '@mediapipe/camera_utils':
         specifier: ^0.3.1675466862
         version: 0.3.1675466862
+      '@mediapipe/drawing_utils':
+        specifier: ^0.3.1675466124
+        version: 0.3.1675466124
       '@mediapipe/hands':
         specifier: ^0.4.1675469240
         version: 0.4.1675469240
+      '@mediapipe/holistic':
+        specifier: ^0.5.1675471629
+        version: 0.5.1675471629
       '@mediapipe/pose':
         specifier: ^0.5.1675469404
         version: 0.5.1675469404
       '@mediapipe/tasks-vision':
         specifier: ^0.10.17
         version: 0.10.17
+      '@pixiv/three-vrm':
+        specifier: ^3.1.4
+        version: 3.1.4(three@0.170.0)
       '@react-three/fiber':
         specifier: ^8.17.10
         version: 8.17.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(three@0.170.0)
@@ -53,6 +62,9 @@ importers:
       geist:
         specifier: ^1.3.0
         version: 1.3.1(next@15.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+      kalidokit:
+        specifier: ^1.1.5
+        version: 1.1.5
       next:
         specifier: ^15.0.1
         version: 15.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -602,8 +614,14 @@ packages:
   '@mediapipe/camera_utils@0.3.1675466862':
     resolution: {integrity: sha512-siuXBoUxWo9WL0MeAxIxvxY04bvbtdNl7uCxoJxiAiRtNnCYrurr7Vl5VYQ94P7Sq0gVq6PxIDhWWeZ/pLnSzw==}
 
+  '@mediapipe/drawing_utils@0.3.1675466124':
+    resolution: {integrity: sha512-/IWIB/iYRMtiUKe3k7yGqvwseWHCOqzVpRDfMgZ6gv9z7EEimg6iZbRluoPbcNKHbYSxN5yOvYTzUYb8KVf22Q==}
+
   '@mediapipe/hands@0.4.1675469240':
     resolution: {integrity: sha512-GxoZvL1mmhJxFxjuyj7vnC++JIuInGznHBin5c7ZSq/RbcnGyfEcJrkM/bMu5K1Mz/2Ko+vEX6/+wewmEHPrHg==}
+
+  '@mediapipe/holistic@0.5.1675471629':
+    resolution: {integrity: sha512-qY+cxtDeSOvVtevrLgnodiwXYaAtPi7dHZtNv/bUCGEjFicAOYtMmrZSqMmbPkTB2+4jLnPF1vgshkAqQRSYAw==}
 
   '@mediapipe/pose@0.5.1675469404':
     resolution: {integrity: sha512-DFZsNWTsSphRIZppnUCuunzBiHP2FdJXR9ehc7mMi4KG+oPaOH0Em3d6kr7Py+TSyTXC1doH88KcF28k2sBxsQ==}
@@ -683,6 +701,62 @@ packages:
 
   '@panva/hkdf@1.2.1':
     resolution: {integrity: sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==}
+
+  '@pixiv/three-vrm-core@3.1.4':
+    resolution: {integrity: sha512-lF3rHiVINRj/my7JufSX6OqwsoIoLjCIwHDbccLDPTrX/0qmIkWZ+1onaGpdeLWsOONmdB6h2shJnZQZY8Ndhg==}
+    peerDependencies:
+      three: '>=0.137'
+
+  '@pixiv/three-vrm-materials-hdr-emissive-multiplier@3.1.4':
+    resolution: {integrity: sha512-4yDUWIqhgqg+CkuTvhnMDo5ELJOxXZH7v/Z3FDfXj8eUlp5k1+0n0xGY3Bg2JY2cCeKcWDWGwo5ynrvN3f8b5w==}
+    peerDependencies:
+      three: '>=0.137'
+
+  '@pixiv/three-vrm-materials-mtoon@3.1.4':
+    resolution: {integrity: sha512-ZR3xGC73U2N/D0zWE30mqKlzxl9xPjgi/n7qwauJhtQvosMKeFUCNnEsqNw5oIxVLWBzc/5LklXUada7BZCJkQ==}
+    peerDependencies:
+      three: '>=0.137'
+
+  '@pixiv/three-vrm-materials-v0compat@3.1.4':
+    resolution: {integrity: sha512-lRW+qUuNYUtOi7lELNM94ofV61cW15NDQscuzEwo6Dyf6bv8qjjTBFmSKZ0LtAOPgHolWJCv4yKc1q7SjZrMPw==}
+    peerDependencies:
+      three: '>=0.137'
+
+  '@pixiv/three-vrm-node-constraint@3.1.4':
+    resolution: {integrity: sha512-o9bAId4ityr+F3kG7KWYj0fj+9f8h2rBNyse5lUfiGytJaiMeD2vcAhkUsDSfVmJS5fkcx+hgr5rkQfzN1+pVA==}
+    peerDependencies:
+      three: '>=0.137'
+
+  '@pixiv/three-vrm-springbone@3.1.4':
+    resolution: {integrity: sha512-LsWqDleftdAKuG/XiYRMczu/YCZ8WjEDeRcsJ66KUop8SmDOS2TEJK056/da2pqM4C+OOSRX4V3aFd+ny5bjMg==}
+    peerDependencies:
+      three: '>=0.137'
+
+  '@pixiv/three-vrm@3.1.4':
+    resolution: {integrity: sha512-OUeijj/W9lhfazdr0AX6a8Qv4WVfXGKnAO4tMBYvthWPgznpLFOSiNge/xLsrr00J2qcHUlJSuwwEPVvH4yYqw==}
+    peerDependencies:
+      three: '>=0.137'
+
+  '@pixiv/types-vrm-0.0@3.1.4':
+    resolution: {integrity: sha512-TXmU1uFD+EyFY3XpTsyzt6E/O89iTuk3D4aEEokQG5kLE7iw7T4C2cR67VvRaSrf5MK1+nri5MwUygiukY7eMw==}
+
+  '@pixiv/types-vrmc-materials-hdr-emissive-multiplier-1.0@3.1.4':
+    resolution: {integrity: sha512-Dleb0mMQqSya99LHaRQzRmlk9abemvYhUubuwb5PSQeEKRd8is7uCQCW3R3ryHM1npcxDfgFuxj9upT3VEuARw==}
+
+  '@pixiv/types-vrmc-materials-mtoon-1.0@3.1.4':
+    resolution: {integrity: sha512-jtu7BXtm9wvioN6aJw3DgvKgdcjHJc/72C0xvosgkCfYVfDqj0rrKRos2zv1yUO1JAsKJ3uLH+CW/BPQU/RztQ==}
+
+  '@pixiv/types-vrmc-node-constraint-1.0@3.1.4':
+    resolution: {integrity: sha512-rqWTsAedhstn9bF0pz2VgADIYS6TrXbqh8w/vO3rwk0x11JlZGeBuQgW4lCVBMO0r7kbYHQQLwnaoOUMBzxw3A==}
+
+  '@pixiv/types-vrmc-springbone-1.0@3.1.4':
+    resolution: {integrity: sha512-1GOOjOCFWsu+AGR3d7/00dyxZTTaTSUw2KhjFCW/RH9HBD70lEXYmO164BR0+v5oLNiUSNZMsncTWxGnlPFmcw==}
+
+  '@pixiv/types-vrmc-springbone-extended-collider-1.0@3.1.4':
+    resolution: {integrity: sha512-XlZRS/9ELbOXX7ILv9KBu5+2Sp+i2cuG7kEh7cxXEUA+bah4aexaX78JAToQGx1dJzXLM+1uSp7HY+UxVE/ELw==}
+
+  '@pixiv/types-vrmc-vrm-1.0@3.1.4':
+    resolution: {integrity: sha512-Z1Br2iy8p3nXjvEHG/SySasism8diSUNwqxr8RxCzE83tCyMFEwTcnpRee5V8Vz+HXRGLv/xMmMX6V8S/BDMWw==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -1835,6 +1909,9 @@ packages:
     resolution: {integrity: sha512-ZZow9HBI5O6EPgSJLUb8n2NKgmVWTwCvHGwFuJlMjvLFqlGG6pjirPhtdsseaLZjSibD8eegzmYpUZwoIlj2cQ==}
     engines: {node: '>=4.0'}
 
+  kalidokit@1.1.5:
+    resolution: {integrity: sha512-cLaPfCK5UB1QUesFSF12s1/ZsOz4FMcaZDqfFoIYYAzouAjzreishAKIMuoN4zhz2KLuJudGKYWVjI+VVb0W1Q==}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -2917,7 +2994,11 @@ snapshots:
 
   '@mediapipe/camera_utils@0.3.1675466862': {}
 
+  '@mediapipe/drawing_utils@0.3.1675466124': {}
+
   '@mediapipe/hands@0.4.1675469240': {}
+
+  '@mediapipe/holistic@0.5.1675471629': {}
 
   '@mediapipe/pose@0.5.1675469404': {}
 
@@ -2968,6 +3049,65 @@ snapshots:
   '@nolyfill/is-core-module@1.0.39': {}
 
   '@panva/hkdf@1.2.1': {}
+
+  '@pixiv/three-vrm-core@3.1.4(three@0.170.0)':
+    dependencies:
+      '@pixiv/types-vrm-0.0': 3.1.4
+      '@pixiv/types-vrmc-vrm-1.0': 3.1.4
+      three: 0.170.0
+
+  '@pixiv/three-vrm-materials-hdr-emissive-multiplier@3.1.4(three@0.170.0)':
+    dependencies:
+      '@pixiv/types-vrmc-materials-hdr-emissive-multiplier-1.0': 3.1.4
+      three: 0.170.0
+
+  '@pixiv/three-vrm-materials-mtoon@3.1.4(three@0.170.0)':
+    dependencies:
+      '@pixiv/types-vrm-0.0': 3.1.4
+      '@pixiv/types-vrmc-materials-mtoon-1.0': 3.1.4
+      three: 0.170.0
+
+  '@pixiv/three-vrm-materials-v0compat@3.1.4(three@0.170.0)':
+    dependencies:
+      '@pixiv/types-vrm-0.0': 3.1.4
+      '@pixiv/types-vrmc-materials-mtoon-1.0': 3.1.4
+      three: 0.170.0
+
+  '@pixiv/three-vrm-node-constraint@3.1.4(three@0.170.0)':
+    dependencies:
+      '@pixiv/types-vrmc-node-constraint-1.0': 3.1.4
+      three: 0.170.0
+
+  '@pixiv/three-vrm-springbone@3.1.4(three@0.170.0)':
+    dependencies:
+      '@pixiv/types-vrm-0.0': 3.1.4
+      '@pixiv/types-vrmc-springbone-1.0': 3.1.4
+      '@pixiv/types-vrmc-springbone-extended-collider-1.0': 3.1.4
+      three: 0.170.0
+
+  '@pixiv/three-vrm@3.1.4(three@0.170.0)':
+    dependencies:
+      '@pixiv/three-vrm-core': 3.1.4(three@0.170.0)
+      '@pixiv/three-vrm-materials-hdr-emissive-multiplier': 3.1.4(three@0.170.0)
+      '@pixiv/three-vrm-materials-mtoon': 3.1.4(three@0.170.0)
+      '@pixiv/three-vrm-materials-v0compat': 3.1.4(three@0.170.0)
+      '@pixiv/three-vrm-node-constraint': 3.1.4(three@0.170.0)
+      '@pixiv/three-vrm-springbone': 3.1.4(three@0.170.0)
+      three: 0.170.0
+
+  '@pixiv/types-vrm-0.0@3.1.4': {}
+
+  '@pixiv/types-vrmc-materials-hdr-emissive-multiplier-1.0@3.1.4': {}
+
+  '@pixiv/types-vrmc-materials-mtoon-1.0@3.1.4': {}
+
+  '@pixiv/types-vrmc-node-constraint-1.0@3.1.4': {}
+
+  '@pixiv/types-vrmc-springbone-1.0@3.1.4': {}
+
+  '@pixiv/types-vrmc-springbone-extended-collider-1.0@3.1.4': {}
+
+  '@pixiv/types-vrmc-vrm-1.0@3.1.4': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -4276,6 +4416,8 @@ snapshots:
       array.prototype.flat: 1.3.2
       object.assign: 4.1.5
       object.values: 1.2.0
+
+  kalidokit@1.1.5: {}
 
   keyv@4.5.4:
     dependencies:

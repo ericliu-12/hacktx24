@@ -84,7 +84,7 @@ export const HolisticModel: React.FC<Props> = ({ setPoseLandmarks }) => {
 
   const onResults = (results: any) => {
     // Draw landmark guides
-    drawResults(results);
+    // drawResults(results);
     // Animate model
     setPoseLandmarks(results);
   };
@@ -128,7 +128,7 @@ export const HolisticModel: React.FC<Props> = ({ setPoseLandmarks }) => {
 
   return (
     <>
-      <div>
+      <div style={{ position: "absolute", top: 0, left: 0 }}>
         <video ref={videoRef} autoPlay playsInline muted hidden />
         <canvas ref={canvasRef} width={320} height={240} />
       </div>
