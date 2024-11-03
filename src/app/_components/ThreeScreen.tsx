@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { xor } from 'three/webgpu';
+import { useRouter } from 'next/navigation';
 
 function lerp(x: number, y: number, a: number) {
     return (1 - easeInOutSine(a)) * x + easeInOutSine(a) * y;
@@ -24,6 +24,7 @@ const ThreeScene: React.FC = () => {
     const floorRef = useRef<THREE.Group | null>(null);
     const [isIdle, setIdle] = useState<boolean>(true);
     const isIdleRef = useRef(isIdle);
+    const router = useRouter();
     let cabinet: THREE.Group | null = null;
     let floor: THREE.Group | null = null;
 
@@ -70,6 +71,9 @@ const ThreeScene: React.FC = () => {
                 }
                 counter += (1 / (FPS * DURATION));
             }, 1000 / FPS)
+            setTimeout(() => {
+                router.push('/play');
+            }, 1000)
         }
     }
 
@@ -80,7 +84,6 @@ const ThreeScene: React.FC = () => {
         } else {
             camera.position.z = Math.min(camera.position.z + (delta * 0.01), 6);
         }
-        console.log(camera.position.z)
     }
 
     useEffect(() => {
@@ -94,7 +97,7 @@ const ThreeScene: React.FC = () => {
         const loader = new GLTFLoader();
 
         camera.position.set(0, 0, 5)
-        const light = new THREE.AmbientLight(0xffffff, 0.3); // White light with intensity
+        const light = new THREE.AmbientLight(0xffffff, 0.5); 
         const dirLight = new THREE.DirectionalLight(0xffffff, 2)
         const spotlight = new THREE.SpotLight(
             0xFFFFFF, 10.0, 10.0, (Math.PI / 4), 1, 0
@@ -114,11 +117,11 @@ const ThreeScene: React.FC = () => {
         scene.add(spotlight.target)
 
         loader.load('/cabinet.glb', (glb) => {
-            cabinet = glb.scene; // Cast to Group
+            cabinet = glb.scene; 
             cabinet.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
-                    child.castShadow = true; // Allow the cabinet to cast shadows
-                    child.receiveShadow = true; // Ensure cabinet receives shadows too
+                    child.castShadow = true; 
+                    child.receiveShadow = true;
                 }
             });
             scene.add(cabinet);
@@ -126,15 +129,14 @@ const ThreeScene: React.FC = () => {
             cabinet.rotation.y = -(Math.PI / 2);
             cabinet.scale.set(0.7, 0.7, 0.7)
 
-            // Store the cabinet reference for later use
             cabinetRef.current = cabinet;
         });
 
         loader.load('/box.glb', (glb) => {
-            floor = glb.scene; // Cast to Group
+            floor = glb.scene; 
             floor.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
-                    child.receiveShadow = true; // Ensure the floor receives shadows
+                    child.receiveShadow = true;
                 }
             });
             scene.add(floor);
@@ -144,9 +146,8 @@ const ThreeScene: React.FC = () => {
 
             floorRef.current = floor;
         });
-        animate();
 
-       
+        animate();       
 
         window.addEventListener('wheel', handleScroll);
         window.addEventListener('click', beginAnimation)
