@@ -98,17 +98,16 @@ export default function ModelCard({ name, path, setAvatar }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-4 text-center">
-      <div className="hover:-translate-y-4 hover:cursor-pointer">
-        <ModelViewer modelPath={path} />
-      </div>
-      <button
-        className="hover:translate-y-1"
+    <>
+      <div
+        className="flex flex-col gap-4 text-center"
         onClick={handleSaveAvatar}
-        // disabled={loading || userId === null}
       >
-        {loading ? "Saving..." : name}
-      </button>
-    </div>
+        <div className="hover:-translate-y-4 hover:cursor-pointer">
+          <ModelViewer modelPath={path} />
+        </div>
+        <button className="hover:translate-y-1">{name}</button>
+      </div>
+    </>
   );
 }

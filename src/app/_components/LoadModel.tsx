@@ -6,6 +6,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 import { animateVRM } from "./Animate";
+import { getSession } from "next-auth/react";
 
 interface Props {
   landmarks: any; // Add the type according to your data structure
@@ -17,12 +18,70 @@ const VrmModelViewer: React.FC<Props> = ({ landmarks, videoRef }) => {
   const currentVrmRef = useRef<any>(null);
   const landmarksRef = useRef<any>(null);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [modelPath, setModelPath] = useState<string | null>(null);
 
   useEffect(() => {
     landmarksRef.current = landmarks;
   }, [landmarks]);
 
   useEffect(() => {
+    if (!userId) {
+      const fetchUserId = async () => {
+        const session = await getSession();
+        if (session?.user?.email) {
+          try {
+            const response = await fetch("/api/getUserIdByEmail", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: session.user.email }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+              setUserId(data.userId);
+              console.log("Fetched userId:", data.userId);
+            } else {
+              console.error("Error fetching user ID:", data.error);
+            }
+          } catch (error) {
+            console.error("Error fetching user ID:", error);
+          }
+        }
+      };
+      fetchUserId();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchModelPath = async () => {
+      if (!userId) return;
+
+      try {
+        const response = await fetch(`/api/profile?userId=${userId}`);
+        const data = await response.json();
+
+        if (response.ok && data.model_path) {
+          setModelPath(data.model_path); // Set modelPath state with fetched path
+        } else {
+          console.error(
+            "Failed to load model path:",
+            data.error || "No model path found",
+          );
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching model path:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchModelPath();
+  }, [userId]);
+
+  useEffect(() => {
+    // Only run if modelPath is available
+    if (!modelPath) return;
+
     // renderer
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     const w = 500;
@@ -62,7 +121,7 @@ const VrmModelViewer: React.FC<Props> = ({ landmarks, videoRef }) => {
     });
 
     loader.load(
-      "/models/suki.vrm",
+      modelPath, // Dynamically load modelPath from API
       (gltf: any) => {
         const vrm = gltf.userData.vrm;
 
@@ -90,7 +149,7 @@ const VrmModelViewer: React.FC<Props> = ({ landmarks, videoRef }) => {
     function animate() {
       requestAnimationFrame(animate);
 
-      const currentVrm = currentVrmRef.current; // Access the current VRM from the ref
+      const currentVrm = currentVrmRef.current;
       const landmarks = landmarksRef.current;
 
       if (currentVrm) {
@@ -106,7 +165,7 @@ const VrmModelViewer: React.FC<Props> = ({ landmarks, videoRef }) => {
     }
 
     animate();
-  }, []);
+  }, [modelPath]); // Re-run this effect if modelPath changes
 
   return (
     <div>

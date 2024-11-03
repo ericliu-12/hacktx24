@@ -74,16 +74,6 @@ export default function Page() {
         </Link>
 
         <MainComponent setUserPose={setUserPose} />
-
-        {/* Start and Stop Tracking Buttons */}
-        <button onClick={startTracking}>Start Tracking</button>
-        <button onClick={stopTracking}>Stop Tracking</button>
-
-        {/* Display Similarity Score */}
-        <p>
-          Similarity Score:{" "}
-          {similarityScore !== null ? similarityScore.toFixed(2) : "N/A"}
-        </p>
       </div>
       <VideoPlayer
         selected={"/songs/hot_to_go.mp4"}
