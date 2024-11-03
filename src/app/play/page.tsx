@@ -99,8 +99,8 @@ export default function Page() {
       {/* Second Column */}
       <div className="flex w-1/2 flex-col items-center justify-center">
         <Image
-          src="/clouds.png"
-          alt="clouds"
+          src="/yoa_total_banner.png"
+          alt="yoa_total_banner"
           width={500}
           height={500}
           style={{ width: "40vw", height: "auto" }}

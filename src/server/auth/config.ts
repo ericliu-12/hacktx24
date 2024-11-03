@@ -68,25 +68,22 @@ export const authConfig = {
         id: user.id,
       },
     }),
-    async signIn({ user }) {
-      try {
-        // Check if the user already exists based on email
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        // Check if the user exists in the database
         const existingUser = await query(
-          `SELECT * FROM users WHERE email = $1`,
+          "SELECT * FROM users WHERE email = $1",
           [user.email],
         );
-
-        // If user already exists, skip creation and allow sign-in
-        if (existingUser.rows.length > 0) {
-          return true; // Allow sign-in
+        if (existingUser.rows.length === 0) {
+          // If user does not exist, insert them
+          await query(
+            "INSERT INTO users (googleId, email, name) VALUES ($1, $2, $3)",
+            [account.id, user.email, user.name],
+          );
         }
-
-        // Else, allow the default behavior to create the new user
-        return true;
-      } catch (error) {
-        console.error("Error in signIn callback:", error);
-        return false;
       }
+      return true;
     },
   },
 } satisfies NextAuthConfig;
