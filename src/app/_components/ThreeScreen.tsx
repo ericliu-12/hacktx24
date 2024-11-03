@@ -62,6 +62,9 @@ const ThreeScene: React.FC = () => {
             const interval = setInterval(() => {
                 if (counter >= 1) {
                     clearInterval(interval);
+                    setTimeout(() => {
+                        router.push('/play');
+                    }, 1000);
                     return;
                 }
                 if (cabinet) {
@@ -71,9 +74,6 @@ const ThreeScene: React.FC = () => {
                 }
                 counter += (1 / (FPS * DURATION));
             }, 1000 / FPS)
-            setTimeout(() => {
-                router.push('/play');
-            }, 1000)
         }
     }
 

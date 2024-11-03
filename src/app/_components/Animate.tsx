@@ -62,7 +62,7 @@ const rigFace = (riggedFace: Kalidokit.TFace) => {
   if (!currentVrm) {
     return;
   }
-  rigRotation("Neck", riggedFace.head, 0.7);
+  rigRotation("Neck", riggedFace.head, 1);
 
   const blinkValue = Math.cos(
     (Math.PI * (riggedFace.eye.l + riggedFace.eye.r)) / 2,
@@ -122,15 +122,7 @@ export const animateVRM = (vrm: any, results: any, videoRef: any) => {
       video: videoRef.current,
     });
 
-    rigRotation(
-      "Hips",
-      {
-        x: poseRig!.Hips.rotation?.x || 0,
-        y: poseRig!.Hips.rotation?.y || 0,
-        z: (poseRig!.Hips.rotation?.z || 0) + 0.1,
-      },
-      0.7,
-    );
+    rigRotation("Hips", poseRig!.Hips.rotation, 0.7);
     rigPosition(
       "Hips",
       {
@@ -145,10 +137,10 @@ export const animateVRM = (vrm: any, results: any, videoRef: any) => {
     rigRotation("Chest", poseRig!.Spine, 0.25, 0.3);
     rigRotation("Spine", poseRig!.Spine, 0.45, 0.3);
 
-    rigRotation("RightUpperArm", poseRig!.RightUpperArm, 1, 0.2);
-    rigRotation("RightLowerArm", poseRig!.RightLowerArm, 1, 0.2);
-    rigRotation("LeftUpperArm", poseRig!.LeftUpperArm, 1, 0.2);
-    rigRotation("LeftLowerArm", poseRig!.LeftLowerArm, 1, 0.2);
+    rigRotation("RightUpperArm", poseRig!.RightUpperArm, 1, 0.3);
+    rigRotation("RightLowerArm", poseRig!.RightLowerArm, 1, 0.3);
+    rigRotation("LeftUpperArm", poseRig!.LeftUpperArm, 1, 0.3);
+    rigRotation("LeftLowerArm", poseRig!.LeftLowerArm, 1, 0.3);
 
     rigRotation("LeftUpperLeg", poseRig!.LeftUpperLeg, 1, 0.3);
     rigRotation("LeftLowerLeg", poseRig!.LeftLowerLeg, 1, 0.3);

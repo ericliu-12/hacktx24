@@ -1,8 +1,12 @@
-import React from 'react';
+import React from "react";
 
-export default function PlayLayout({ children }: { children: React.ReactNode }) {
+export default function PlayLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className='border-4 shadow-md shadow-white border-purple-600 max-h-screen m-10 p-10 bg-transparent'>
+    <div className="m-10 h-dvh border-4 border-purple-600 bg-transparent p-10 shadow-md shadow-white">
       {children}
     </div>
   );

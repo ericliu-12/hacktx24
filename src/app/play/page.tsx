@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -11,12 +11,20 @@ import {
  } from "~/components/ui/carousel";
 
 export default function Page() {
-    return (
-        <>
-            <Carousel>
+  const [isHovered, setHovered] = useState<boolean>(false);
 
-            </Carousel>
-        </>
-    )
+  return (
+    <>
+      <div>select game</div>
 
+      <Link href={"/play/dance"}>
+        <div
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          {isHovered ? "> dance" : "dance"}
+        </div>
+      </Link>
+    </>
+  );
 }

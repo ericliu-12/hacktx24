@@ -12,14 +12,16 @@ export const MainComponent = () => {
   const vrmContainerRef = useRef(null);
 
   return (
-    <div className="flex">
-      <HolisticModel setPoseLandmarks={setPoseLandmarks} />
-      <div ref={vrmContainerRef} />
-      <VRMDisplay
-        poseLandmarks={poseLandmarks}
-        videoRef={videoRef}
-        containerRef={vrmContainerRef}
-      />
-    </div>
+    <>
+      <div className="flex">
+        <HolisticModel setPoseLandmarks={setPoseLandmarks} />
+        <div ref={vrmContainerRef} />
+        <VRMDisplay
+          poseLandmarks={poseLandmarks}
+          videoRef={videoRef}
+          containerRef={vrmContainerRef}
+        />
+      </div>
+    </>
   );
 };
