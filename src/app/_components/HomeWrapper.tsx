@@ -5,33 +5,31 @@ import ThreeScene from "./ThreeScreen";
 import type { Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import useSound from 'use-sound'
+import useSound from "use-sound";
 
 export default function HomeWrapper({ session }: { session: Session | null }) {
   const [startAnim, setStartAnim] = useState<boolean>(false);
   const [leaderAnim, setLeaderAnim] = useState<boolean>(false);
   const [route, setRoute] = useState("");
   const [shown, setShown] = useState(true);
-  const [playSound] = useSound('/audio/play.wav')
-  const [selectSound] = useSound('/audio/select.wav')
+  const [playSound] = useSound("/audio/play.wav");
+  const [selectSound] = useSound("/audio/select.wav");
 
   useEffect(() => {
     if (!startAnim) return;
-    setShown(false)
-
-  }, [startAnim])
+    setShown(false);
+  }, [startAnim]);
 
   return (
     <>
-      <ThreeScene
-        startAnim={startAnim}
-        leaderAnim={leaderAnim}
-        route={route}
-      />
+      <ThreeScene startAnim={startAnim} leaderAnim={leaderAnim} route={route} />
 
       <AnimatePresence>
         {shown ? (
-          <motion.div exit={{ opacity: 0}}  className="fixed right-10 top-1/2 -translate-y-1/2 bg-black/75 p-4 shadow-md">
+          <motion.div
+            exit={{ opacity: 0 }}
+            className="fixed right-10 top-1/2 -translate-y-1/2 bg-black/75 p-4 shadow-md"
+          >
             <p className="text-3xl">
               Welcome, {session?.user ? session.user.name : "Guest!"}
             </p>
@@ -44,7 +42,7 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
               <div className="space-x-4">
                 <button
                   onClick={() => {
-                    playSound()
+                    playSound();
                     setStartAnim(true);
                     setRoute("/play");
                   }}
@@ -52,16 +50,27 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
                 >
                   Start
                 </button>
-                <button onClick={() => {
-                  selectSound();
-                }} className="hover:translate-y-1">Stats</button>
-                <button onClick={() => {
-                  selectSound();
-                  setLeaderAnim(true);
-                }} className="hover:translate-y-1">Leaderboards</button>
                 <button
                   onClick={() => {
                     selectSound();
+                  }}
+                  className="hover:translate-y-1"
+                >
+                  Stats
+                </button>
+                <button
+                  onClick={() => {
+                    selectSound();
+                    setLeaderAnim(true);
+                  }}
+                  className="hover:translate-y-1"
+                >
+                  Leaderboards
+                </button>
+                <button
+                  onClick={() => {
+                    selectSound();
+                    setStartAnim(true);
                     setRoute("/profile");
                   }}
                   className="hover:translate-y-1"
