@@ -7,9 +7,11 @@ export default async function Home() {
 
   if (session?.user) {
     void api.post.getLatest.prefetch();
-}
+  }
 
-  return <HydrateClient>
-    <HomeWrapper session={session} />
-  </HydrateClient>;
+  return (
+    <HydrateClient>
+      <HomeWrapper session={session} />
+    </HydrateClient>
+  );
 }

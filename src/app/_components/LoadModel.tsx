@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -10,16 +10,13 @@ import { animateVRM } from "./Animate";
 interface Props {
   poseLandmarks: any; // Add the type according to your data structure
   videoRef: React.RefObject<HTMLVideoElement>;
-  containerRef: React.RefObject<HTMLDivElement>;
 }
 
-const VrmModelViewer: React.FC<Props> = ({
-  poseLandmarks,
-  videoRef,
-  containerRef,
-}) => {
+const VrmModelViewer: React.FC<Props> = ({ poseLandmarks, videoRef }) => {
+  const mountRef = useRef<HTMLDivElement>(null);
   const currentVrmRef = useRef<any>(null);
   const poseLandmarksRef = useRef<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     poseLandmarksRef.current = poseLandmarks;
@@ -33,7 +30,7 @@ const VrmModelViewer: React.FC<Props> = ({
 
     renderer.setSize(w, h);
     renderer.setPixelRatio(window.devicePixelRatio);
-    containerRef.current?.appendChild(renderer.domElement);
+    mountRef.current?.appendChild(renderer.domElement);
 
     // camera
     const orbitCamera = new THREE.PerspectiveCamera(35, w / h, 0.1, 1000);
@@ -65,12 +62,9 @@ const VrmModelViewer: React.FC<Props> = ({
     });
 
     loader.load(
-      "/models/avatar_a.vrm",
+      "/models/suki.vrm",
       (gltf: any) => {
         const vrm = gltf.userData.vrm;
-
-        vrm.humanoid.getNormalizedBoneNode("leftUpperArm").rotation.z = 1.4;
-        vrm.humanoid.getNormalizedBoneNode("rightUpperArm").rotation.z = -1.4;
 
         VRMUtils.removeUnnecessaryVertices(gltf.scene);
         VRMUtils.removeUnnecessaryJoints(gltf.scene);
@@ -82,6 +76,11 @@ const VrmModelViewer: React.FC<Props> = ({
         scene.add(vrm.scene);
         currentVrmRef.current = vrm;
         vrm.scene.rotation.y = Math.PI; // Rotate model 180deg to face camera
+
+        setInterval(() => {
+          setLoading(false);
+        }, 3000);
+
         console.log("Loaded model");
       },
       undefined,
@@ -94,6 +93,11 @@ const VrmModelViewer: React.FC<Props> = ({
       const currentVrm = currentVrmRef.current; // Access the current VRM from the ref
       const poseLandmarks = poseLandmarksRef.current;
 
+      if (currentVrm) {
+        currentVrm.humanoid.getRawBoneNode("leftUpperArm").rotation.z = 1.4;
+        currentVrm.humanoid.getRawBoneNode("rightUpperArm").rotation.z = -1.4;
+      }
+
       if (currentVrm && poseLandmarks) {
         animateVRM(currentVrm, poseLandmarks, videoRef);
         currentVrm.update(clock.getDelta());
@@ -104,7 +108,12 @@ const VrmModelViewer: React.FC<Props> = ({
     animate();
   }, []);
 
-  return null; // Render nothing since the canvas is appended to the body
+  return (
+    <div>
+      {loading && <p>Loading model...</p>}
+      <div ref={mountRef} />
+    </div>
+  );
 };
 
 export default VrmModelViewer;
