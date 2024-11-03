@@ -29,11 +29,11 @@ export default function Page() {
       ],
     },
     {
-      href: "/play/wordhunt",
-      cover: "/twice_album.png",
-      title: "Word Hunt",
-      description: ["Find words and earn points!"],
-    },
+      href: "/play/wordhunt", cover: "/wordhunt.png", title: "Word Hunt", description: [
+        "Find the hidden words!",
+        "Search through the grid and uncover all the target words before time runs out. Test your vocabulary and beat the clock!"
+      ]
+    }
   ];
 
   return (

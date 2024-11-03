@@ -1,6 +1,7 @@
 import ModelViewer from "./StaticModelViewer";
 import { useEffect, useState } from "react";
 import { getSession } from "next-auth/react";
+import useSound from "use-sound";
 
 interface Props {
   name: string;
@@ -11,6 +12,7 @@ interface Props {
 export default function ModelCard({ name, path, setAvatar }: Props) {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
+  const [selectSound] = useSound('/audio/select2.wav')
 
   // useEffect(() => {
   //   const fetchUserId = async () => {
@@ -101,7 +103,10 @@ export default function ModelCard({ name, path, setAvatar }: Props) {
     <>
       <div
         className="flex flex-col gap-4 text-center"
-        onClick={handleSaveAvatar}
+        onClick={() => {
+          selectSound();
+          handleSaveAvatar();
+        }}
       >
         <div className="hover:-translate-y-4 hover:cursor-pointer">
           <ModelViewer modelPath={path} />
