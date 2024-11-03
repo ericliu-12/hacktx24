@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { MainComponent } from "~/app/_components/Main";
 import VideoPlayer from "~/app/_components/VideoPlayer";
-import PoseWithWebcam from "~/app/_components/PoseWithWebcam";
+import ErrorBoundary from "~/app/_components/ErrorBoundary";
 
 export default function Page() {
   const [userPose, setUserPose] = useState<any[]>([]);
@@ -61,29 +61,31 @@ export default function Page() {
   };
 
   return (
-    <div className="flex w-full">
-      <div className="flex flex-col">
-        <h1>just leap</h1>
-        <Link href="/play">
-          <div
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-          >
-            {isHovered ? "< back" : "back"}
-          </div>
-        </Link>
+    <ErrorBoundary>
+      <div className="flex w-full">
+        <div className="flex flex-col">
+          <h1>just leap</h1>
+          <Link href="/play">
+            <div
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+            >
+              {isHovered ? "< back" : "back"}
+            </div>
+          </Link>
 
-        <MainComponent setUserPose={setUserPose} />
+          <MainComponent setUserPose={setUserPose} />
+        </div>
+        <VideoPlayer
+          selected={"/songs/hot_to_go.mp4"}
+          setVideoPose={(pose) => {
+            if (isTracking) setVideoPose(pose); // Only set video pose when tracking is active
+          }}
+          similarityScore={similarityScore}
+          isTracking={isTracking} // Pass tracking state as a prop
+          setIsTracking={setIsTracking} // Pass setIsTracking to control tracking from VideoPlayer
+        />
       </div>
-      <VideoPlayer
-        selected={"/songs/hot_to_go.mp4"}
-        setVideoPose={(pose) => {
-          if (isTracking) setVideoPose(pose); // Only set video pose when tracking is active
-        }}
-        similarityScore={similarityScore}
-        isTracking={isTracking} // Pass tracking state as a prop
-        setIsTracking={setIsTracking} // Pass setIsTracking to control tracking from VideoPlayer
-      />
-    </div>
+    </ErrorBoundary>
   );
 }

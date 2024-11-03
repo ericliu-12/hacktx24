@@ -82,6 +82,8 @@ export default function VideoPlayer({
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [scoreSum, setScoreSum] = useState<number>(0);
   const [scoreCount, setScoreCount] = useState<number>(0);
+  const [scoreMessage, setScoreMessage] = useState<string>("");
+
   useEffect(() => {
     const fetchUserId = async () => {
       const session = await getSession();
@@ -95,7 +97,6 @@ export default function VideoPlayer({
           const data = await response.json();
           if (response.ok) {
             setUserId(data.userId);
-            console.log(data.userId);
           } else {
             console.error("Error fetching user ID:", data.error);
           }
@@ -109,6 +110,7 @@ export default function VideoPlayer({
 
     fetchUserId();
   }, []);
+
   useEffect(() => {
     const loadPose = async () => {
       const pose = new poseModule.Pose({
@@ -160,6 +162,32 @@ export default function VideoPlayer({
       setScoreCount((prev) => prev + 1);
     }
   }, [similarityScore, isTracking]);
+
+  useEffect(() => {
+    // Update score message based on the similarity score immediately
+    const updateScoreMessage = () => {
+      if (similarityScore !== null) {
+        if (similarityScore > 80) {
+          setScoreMessage("Excellent! Keep it up!");
+        } else if (similarityScore > 60) {
+          setScoreMessage("Good! Almost there!");
+        } else if (similarityScore > 40) {
+          setScoreMessage("Decent! Try to improve.");
+        } else {
+          setScoreMessage("Keep practicing!");
+        }
+      }
+    };
+
+    // Call the function immediately when similarityScore changes
+    updateScoreMessage();
+
+    // Optional: If you still want it to update every second while tracking
+    const interval = setInterval(updateScoreMessage, 1000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, [similarityScore]);
 
   const startTracking = () => {
     if (videoRef.current) {
@@ -255,6 +283,7 @@ export default function VideoPlayer({
               ? similarityScore.toFixed(2)
               : "Calculating..."}
           </div>
+          <div>{scoreMessage}</div>
         </div>
       </div>
     </>
