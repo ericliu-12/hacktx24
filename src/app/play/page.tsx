@@ -157,9 +157,9 @@ export default function Page() {
           </div>
         </Carousel>
 
-        <Link href={games[current]?.href}>
+        <Link href={games[current]?.href ?? "/"}>
           <button
-            onClick={playSound}
+            onClick={() => playSound()}
             className="mt-4 hover:scale-105 active:scale-95"
           >
             <Image

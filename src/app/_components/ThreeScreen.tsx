@@ -150,6 +150,16 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
 
     requestAnimationFrame(animate);
   };
+  
+  const handleScroll = (event: Event) => {
+    if (!cameraRef.current) return;
+    const delta = (event as WheelEvent).deltaY;
+    if (delta < 0) {
+      cameraRef.current.position.z = Math.max(cameraRef.current.position.z + (delta * 0.01), 4);
+    } else {
+      cameraRef.current.position.z = Math.min(cameraRef.current.position.z + (delta * 0.01), 6);
+    }
+}
 
   useEffect(() => {
     initRendererAndCamera();
@@ -220,6 +230,11 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     };
 
     animate();
+    window.addEventListener('wheel', handleScroll);
+
+    return () => {
+      window.removeEventListener('wheel', handleScroll)
+    }
   }, []);
 
   useEffect(() => {
