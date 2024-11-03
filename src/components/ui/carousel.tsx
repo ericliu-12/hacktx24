@@ -4,8 +4,7 @@ import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
-import { ArrowLeft, ArrowRight } from "lucide-react"
-import Image from 'next/image';
+import { motion } from 'framer-motion'
 
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
@@ -205,7 +204,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         variant={variant}
         size={size}
         className={cn(
-          "absolute w-12 h-12 p-0", // Set padding to 0 to avoid extra space
+          "absolute w-12 h-12 p-0 hover:bg-transparent",
           orientation === "horizontal"
             ? "-left-12 top-1/2 -translate-y-1/2"
             : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -215,7 +214,9 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         onClick={scrollPrev}
         {...props}
       >
-        <img src="/left_arrow.png" alt="left arrow" className="w-full h-full" />
+        <div className="hover:scale-110 active:scale-90">
+          <img src="/left_arrow.png" alt="left arrow" className="w-full h-full" />
+        </div>
         <span className="sr-only">Previous slide</span>
       </Button>
     );
@@ -233,7 +234,7 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         variant={variant}
         size={size}
         className={cn(
-          "absolute h-12 w-12 p-0", // Set padding to 0 to avoid extra space
+          "absolute h-12 w-12 p-0 hover:bg-transparent", // Set padding to 0 to avoid extra space
           orientation === "horizontal"
             ? "-right-12 top-1/2 -translate-y-1/2"
             : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -243,7 +244,9 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         onClick={scrollNext}
         {...props}
       >
-        <img src="/right_arrow.png" alt="right arrow" className="w-full h-full" />
+        <div className="hover:scale-110 active:scale-90">
+          <img src="/right_arrow.png" alt="right arrow" className="w-full h-full" />
+        </div>
         <span className="sr-only">Next slide</span>
       </Button>
     );

@@ -1,101 +1,93 @@
 "use client";
 
-import EmployeesList from "../_components/EmployeesList";
+import Link from "next/link";
+import { useState } from "react";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
-  CarouselPrevious,
+  CarouselPrevious
 } from "~/components/ui/carousel";
 
 export default function Page() {
+
+  const [current, setCurrent] = useState<number>(0);
+  const games = [
+    {
+      href: "/play/dance", cover: "/twice_album.png", title: "Dance", description: "Dance and stuff"
+    },
+    {
+      href: "/play/wordhunt", cover: "/twice_album.png", title: "Word Hunt", description: "Word hunt and stuff"
+    }
+  ]
+
   return (
-    <>
-      <EmployeesList />
-      <div>select game</div>
-      <div className="flex h-screen w-screen">
-        {/* First Column */}
-        <div className="relative flex w-1/2 flex-col items-center justify-center">
+    <div className="flex h-screen w-screen overflow-hidden">
+      {/* First Column */}
+      <div className="flex flex-col justify-center items-center w-1/2 relative">
+        <img
+          src="./choose_your_game_text.png"
+          alt="choose_your_game"
+          className="h-auto w-[40vw] mb-10 mt-10"
+        />
+
+        <div className="bg-white relative w-[40vw] h-[50vh] mt-5">
           <img
-            src="./choose_your_game_text.png"
-            alt="choose_your_game"
-            className="mb-10 mt-10 h-auto w-[40vw]" // Add margin for spacing
+            src="./top_left_description_frame.png"
+            alt="top_left_description"
+            className="absolute -top-[80px] -left-[72px]"
           />
 
-          <div className="relative mt-5 h-[50vh] w-[40vw] bg-white">
-            <img
-              src="./top_left_description_frame.png"
-              alt="top_left_description"
-              className="absolute -left-[72px] -top-[80px]"
-            />
-
-            <div className="h-[37.5vh] w-1/3 overflow-y-auto break-words p-4 text-black">
-              {/* Description content goes here */}
-            </div>
-
-            <img
-              src="./bottom_right_description_frame.png"
-              alt="bottom_right_description"
-              className="absolute -bottom-[65px] -right-[76px]"
-            />
+          <div className="w-full h-[37.5vh] overflow-y-auto break-words text-black p-4">
+            {games[current]?.description}
           </div>
 
           <img
-            src="./hacktx_sprite.png"
-            alt="hacktx_sprite"
-            className="mt-20 h-auto w-[25vw]" // Add margin for spacing
+            src="./bottom_right_description_frame.png"
+            alt="bottom_right_description"
+            className="absolute -bottom-[65px] -right-[76px]"
           />
         </div>
 
-        {/* Second Column */}
-        <div className="flex w-1/2 flex-col items-center justify-center">
-          <img src="clouds.png" alt="clouds" className="h-auto w-[50vw]" />
+        <img
+          src="./hacktx_sprite.png"
+          alt="hacktx_sprite"
+          className="h-auto w-[25vw] mt-20"
+        />
+      </div>
 
-          <Carousel className="relative mb-10 mt-20 h-auto w-[25vw]">
-            <img
-              src="bottom_left_thumbnail_frame.png"
-              alt="bottom_left_thumbnail_frame"
-              className="absolute -bottom-14 -left-[5px] h-[400px] w-[400px]"
-            />
-            <img
-              src="top_right_thumbnail_frame.png"
-              alt="top_right_thumbnail_frame"
-              className="absolute -right-[3px] -top-[66px] h-[400px] w-[400px]"
-            />
-            <CarouselContent>
-              <CarouselItem>
-                <div className="flex h-full items-center justify-center">
-                  <img
-                    src="./twice_album.png"
-                    alt="twice_album"
-                    className="h-auto w-[20vw] align-middle"
-                  />
+      {/* Second Column */}
+      <div className="flex flex-col items-center justify-center w-1/2">
+        <img src="clouds.png" alt="clouds" className="h-auto w-[50vw]" />
+
+        <Carousel className="relative w-[25vw] mb-10 mt-20 h-auto">
+          <img src="bottom_left_thumbnail_frame.png" alt="bottom_left_thumbnail_frame" className="absolute -left-[5px] -bottom-14 w-[400px] h-[400px]" />
+          <img src="top_right_thumbnail_frame.png" alt="top_right_thumbnail_frame" className="absolute -top-[66px] -right-[3px] w-[400px] h-[400px]" />
+          <CarouselContent>
+            {games.map((game, index) => (
+              <CarouselItem key={index}>
+                <div className="flex items-center justify-center h-full">
+                  <img src={games[current]?.cover} alt="twice_album" className="w-[20vw] h-auto align-middle" />
                 </div>
               </CarouselItem>
+            ))}
+          </CarouselContent>
 
-              <CarouselItem>
-                <div className="flex h-32 items-center justify-center"></div>
-              </CarouselItem>
-
-              <CarouselItem>
-                <div className="flex h-32 items-center justify-center"></div>
-              </CarouselItem>
-            </CarouselContent>
-
+          <div onClick={() => setCurrent(current - 1)}>
             <CarouselPrevious />
+          </div>
+          <div onClick={() => setCurrent(current + 1)}>
             <CarouselNext />
-          </Carousel>
+          </div>
+        </Carousel>
 
-          <button className="mt-4">
-            <img
-              src="./select_button.png"
-              alt="select_button"
-              className="h-auto w-[20vw]"
-            />
+        <Link href={games[current]?.href}>
+          <button className="mt-4 hover:scale-105 active:scale-95">
+            <img src="./select_button.png" alt="select_button" className="w-[20vw] h-auto" />
           </button>
-        </div>
+        </Link>
       </div>
-    </>
+    </div>
   );
 }
