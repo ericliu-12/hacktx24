@@ -15,12 +15,17 @@ export default function WordHuntGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [handLandmarker, setHandLandmarker] = useState<any>(null);
   const [grid, setGrid] = useState<Letter[][]>([]);
-  const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
-  const [isSelecting, setIsSelecting] = useState(false);
+  const [selectedLetters, setSelectedLetters] = useState<Letter[]>([]);
   const [handState, setHandState] = useState("Open");
 
+  const isSelectingRef = useRef(false);
+  const selectedRef = useRef<Letter[]>([]);
+
+  useEffect(() => {
+    selectedRef.current = selectedLetters;
+  }, [selectedLetters]);
+
   const loadHandLandmarker = async () => {
-    // Dynamically import the Hands module
     const handsModule = await import("@mediapipe/hands");
     const hands = new handsModule.Hands({
       locateFile: (file) =>
@@ -29,8 +34,8 @@ export default function WordHuntGame() {
     hands.setOptions({
       maxNumHands: 1,
       modelComplexity: 1,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5,
+      minDetectionConfidence: 0.7,
+      minTrackingConfidence: 0.7,
     });
     hands.onResults(onResults);
     setHandLandmarker(hands);
@@ -66,37 +71,42 @@ export default function WordHuntGame() {
           canvasRef.current.height,
         );
 
-        // Check if a hand was detected
         if (
           results.multiHandLandmarks &&
           results.multiHandLandmarks.length > 0
         ) {
           const handLandmarks = results.multiHandLandmarks[0];
-          const indexTip = handLandmarks[8]; // Index finger tip landmark
+          const middle = handLandmarks[9];
 
-          // Map index finger tip to canvas coordinates
-          const handX = indexTip.x * canvasRef.current.width;
-          const handY = indexTip.y * canvasRef.current.height;
+          let handX =
+            canvasRef.current.width - middle.x * canvasRef.current.width;
+          let handY = middle.y * canvasRef.current.height;
 
-          // Draw the red dot at the hovering position on the game board
+          // Lock position when fist is closed
+          const isFistClosed = detectFistClosed(handLandmarks);
+          if (isFistClosed) {
+            setHandState("Closed");
+            isSelectingRef.current = true;
+          } else {
+            setHandState("Open");
+            isSelectingRef.current = false;
+          }
+
+          // Draw the red dot
           canvasCtx.beginPath();
-          canvasCtx.arc(handX, handY, 10, 0, 2 * Math.PI);
+          canvasCtx.arc(handX, handY, 8, 0, 2 * Math.PI);
           canvasCtx.fillStyle = "red";
           canvasCtx.fill();
 
-          // Detect fist and update hand state
-          const isFistClosed = detectFistClosed(handLandmarks);
-          setHandState(isFistClosed ? "Closed" : "Open");
-
-          if (isFistClosed && !isSelecting) {
-            setIsSelecting(true);
-          } else if (!isFistClosed && isSelecting) {
-            setIsSelecting(false);
-            finalizeWord();
-          }
-
-          // Update hover effect based on index finger position
+          // Update hover state
           updateHoverState(handX, handY);
+
+          if (!isFistClosed) {
+            if (selectedRef.current.length >= 3) {
+              validateWord();
+            }
+            setSelectedLetters([]);
+          }
         }
       }
     }
@@ -116,28 +126,78 @@ export default function WordHuntGame() {
         Math.pow(pinkyTip.y - indexTip.y, 2),
     );
 
-    // If the distances are small, we assume the fist is closed
-    return distanceThumbToIndex < 0.1 && distancePinkyToIndex < 0.1;
+    return distanceThumbToIndex < 0.15 && distancePinkyToIndex < 0.15;
   };
 
   const updateHoverState = (x: number, y: number) => {
     setGrid((prevGrid) =>
-      prevGrid.map((row) =>
-        row.map((cell) => {
-          const cellX = cell.col * 160 + 80;
-          const cellY = cell.row * 120 + 60;
+      prevGrid.map((row, rowIndex) =>
+        row.map((cell, colIndex) => {
+          // Calculate cell width and height based on grid size (4x4 in this case)
+          const cellWidth = 80;
+          const cellHeight = 80;
 
+          // Calculate the top-left corner of the current cell
+          const cellX = (colIndex + 2) * cellWidth;
+          const cellY = rowIndex * cellHeight;
+
+          // Determine if the hand coordinates (x, y) are within the cell's bounding box
           const isHovered =
-            Math.abs(cellX - x) < 40 && Math.abs(cellY - y) < 40;
+            x >= cellX &&
+            x < cellX + cellWidth &&
+            y >= cellY &&
+            y < cellY + cellHeight;
+
+          if (isHovered && isSelectingRef.current) {
+            // Add letter to selectedLetters if it's not already included
+            setSelectedLetters((prevLetters) => {
+              if (
+                !prevLetters.some(
+                  (prevLetter) =>
+                    prevLetter.row === cell.row && prevLetter.col === cell.col,
+                )
+              ) {
+                return [...prevLetters, cell]; // Add the letter if it's not already selected
+              }
+              return prevLetters; // No change if it's already included
+            });
+          }
 
           return {
             ...cell,
             hovered: isHovered,
-            selected: isHovered && isSelecting ? true : cell.selected,
+            selected: isSelectingRef.current
+              ? isHovered
+                ? true
+                : cell.selected
+              : false,
           };
         }),
       ),
     );
+  };
+
+  const checkIfWordExists = async (word: any) => {
+    const response = await fetch(
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
+    );
+    if (!response.ok) {
+      // Handle error (e.g., word not found)
+      return false;
+    }
+    const data = await response.json();
+    return data.length > 0; // Returns true if the word exists
+  };
+
+  // Example usage
+  const validateWord = async () => {
+    const word = selectedRef.current.map((letter) => letter.letter).join("");
+    const isValidWord = await checkIfWordExists(word);
+    if (isValidWord) {
+      alert(`${word} is a valid word!`);
+    } else {
+      alert(`${word} is not a valid word.`);
+    }
   };
 
   const finalizeWord = () => {
@@ -176,22 +236,19 @@ export default function WordHuntGame() {
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       <h1>Word Hunt - Hand Controlled</h1>
-      <p>Selected Letters: {selectedLetters.join("")}</p>
+      <p>
+        Selected Letters:{" "}
+        {selectedLetters.map((letter) => letter.letter).join("")}
+      </p>
       <p>Hand State: {handState}</p>
 
-      {/* Video Display */}
       <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <video
           ref={videoRef}
-          style={{
-            width: "320px",
-            height: "240px",
-            border: "1px solid black",
-          }}
+          style={{ width: "320px", height: "240px", border: "1px solid black" }}
         />
       </div>
 
-      {/* Game Canvas */}
       <div
         style={{
           position: "relative",
@@ -207,7 +264,6 @@ export default function WordHuntGame() {
           style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
         />
 
-        {/* Game Board */}
         <div
           style={{
             backgroundColor: "#f0f0f0",
