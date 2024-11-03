@@ -1,6 +1,7 @@
 # Arcadia
 
 Bringing retro arcade games to life with computer vision.
+https://arcadium.tech
 
 ## Inspiration
 The nostalgia of retro arcade games combined with the advancements in computer vision inspired us to reimagine classic games for a new generation. We wanted to create a unique experience where players could engage with their favorite games in a completely hands-free, immersive way.
