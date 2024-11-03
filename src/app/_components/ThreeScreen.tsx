@@ -16,9 +16,14 @@ function easeInOutSine(t: number) {
 interface ThreeSceneProps {
   startAnim: boolean;
   setStartAnim: (value: boolean) => void;
+  route: string;
 }
 
-const ThreeScene: React.FC<ThreeSceneProps> = ({ startAnim, setStartAnim }) => {
+const ThreeScene: React.FC<ThreeSceneProps> = ({
+  startAnim,
+  setStartAnim,
+  route,
+}) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const cabinetRef = useRef<THREE.Group | null>(null);
   const floorRef = useRef<THREE.Group | null>(null);
@@ -99,7 +104,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ startAnim, setStartAnim }) => {
         requestAnimationFrame(animate);
       } else {
         setTimeout(() => {
-          router.push("/play");
+          router.push(route);
         }, 1000);
       }
     }
