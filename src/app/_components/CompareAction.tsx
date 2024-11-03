@@ -504,7 +504,7 @@ import { Pose, Results } from "@mediapipe/pose";
 
 const CompareActions: React.FC = () => {
   const webcamVideoRef = useRef<HTMLVideoElement | null>(null);
-  const exampleVideoRef = useRef<HTMLVideoElement | null>(null);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [similarityScore, setSimilarityScore] = useState<number | null>(null);
@@ -592,33 +592,6 @@ const CompareActions: React.FC = () => {
 
     loadPose();
   }, [isTracking]);
-
-  const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && exampleVideoRef.current) {
-      exampleVideoRef.current.src = URL.createObjectURL(file);
-      exampleVideoRef.current.load();
-    }
-  };
-
-  const startTracking = () => {
-    setIsTracking(true);
-    webcamLandmarksRef.current = [];
-    exampleLandmarksRef.current = [];
-    if (exampleVideoRef.current) {
-      exampleVideoRef.current.currentTime = 0;
-      exampleVideoRef.current.play();
-    }
-  };
-
-  const stopTracking = () => {
-    setIsTracking(false);
-    setSimilarityScore(null);
-    setScoreLabel("N/A");
-    if (exampleVideoRef.current) {
-      exampleVideoRef.current.pause();
-    }
-  };
 
   const calculateSimilarity = () => {
     if (
