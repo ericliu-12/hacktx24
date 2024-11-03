@@ -152,7 +152,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
   };
   
   const handleScroll = (event: Event) => {
-    if (!cameraRef.current) return;
+    if (!cameraRef.current || startAnim || leaderAnim) return;
     const delta = (event as WheelEvent).deltaY;
     if (delta < 0) {
       cameraRef.current.position.z = Math.max(cameraRef.current.position.z + (delta * 0.01), 4);

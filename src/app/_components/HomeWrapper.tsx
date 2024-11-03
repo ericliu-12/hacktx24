@@ -35,6 +35,7 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
             exit={{ opacity: 0 }}
             className="fixed right-10 top-1/2 -translate-y-1/2 bg-black/75 p-4 shadow-md"
           >
+            <h1 className="text-5xl mb-10 text-purple-300">Arcadia</h1>
             <p className="text-3xl mb-3">
               Welcome, {session?.user ? session.user.name : "Guest"}!
             </p>
