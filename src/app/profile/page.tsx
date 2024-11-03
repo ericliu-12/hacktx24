@@ -2,34 +2,14 @@
 
 import Link from "next/link";
 import ModelCard from "../_components/ModelCard";
-import { useSession } from "next-auth/react";
-import { updateUserAvatar } from "../api/avatars/route";
 import { useState } from "react";
 import useSound from "use-sound";
 
 export default function Page() {
   const [avatar, setAvatar] = useState();
-  const { data: session } = useSession();
-  const [backSound] = useSound('/audio/select.wav')
-
-  // const avatarSelect = async (avatar: [string, string]) => {
-  //   const userId = session?.user?.id;
-  //   if (userId) {
-  //     try {
-  //       await updateUserAvatar(userId, avatar[1]);
-  //       console.log("Avatar updated successfully");
-  //     } catch (error) {
-  //       console.error("Failed to update avatar:", error);
-  //     }
-  //   } else {
-  //     console.error("User not authenticated");
-  //   }
-  // };
+  const [backSound] = useSound("/audio/select.wav");
 
   if (avatar) {
-    // const res = avatarSelect(avatar);
-    // console.log(res);
-
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center">
         <div>
@@ -52,7 +32,12 @@ export default function Page() {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center text-left">
       <Link href="/">
-        <div onClick={() => backSound()} className="fixed left-6 top-6 hover:translate-y-1">Back</div>
+        <div
+          onClick={() => backSound()}
+          className="fixed left-6 top-6 hover:translate-y-1"
+        >
+          Back
+        </div>
       </Link>
 
       <div>

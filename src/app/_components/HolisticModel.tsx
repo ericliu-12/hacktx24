@@ -7,17 +7,20 @@ import * as cam from "@mediapipe/camera_utils";
 interface Props {
   setLandmarks: any;
   setPoseLandmarks: (landmarks: any) => void;
+  setHandLandmarks: (landmarks: any) => void;
 }
 
 export const HolisticModel: React.FC<Props> = ({
   setLandmarks,
   setPoseLandmarks,
+  setHandLandmarks,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cameraRef = useRef<cam.Camera | null>(null);
 
   // Use a ref to store the last pose landmarks
   const lastPoseLandmarksRef = useRef<any>(null);
+  const lastHandLandmarksRef = useRef<any>(null);
   const lastUpdateTime = useRef<number>(Date.now());
 
   useEffect(() => {
@@ -38,6 +41,7 @@ export const HolisticModel: React.FC<Props> = ({
       const currentTime = Date.now();
       if (results.poseLandmarks && currentTime - lastUpdateTime.current >= 10) {
         setLandmarks(results);
+
         if (results.poseLandmarks) {
           // Check if the new pose landmarks are different from the last ones
           const newLandmarks = results.poseLandmarks;
@@ -48,6 +52,30 @@ export const HolisticModel: React.FC<Props> = ({
             setPoseLandmarks(newLandmarks); // Update only if there's a change
             // console.log(newLandmarks);
             lastPoseLandmarksRef.current = newLandmarks; // Update the ref with the new landmarks
+          }
+        }
+        if (results.rightHandLandmarks) {
+          // Check if the new pose landmarks are different from the last ones
+          const newHandmarks = results.rightHandLandmarks;
+          if (
+            JSON.stringify(newHandmarks) !==
+            JSON.stringify(lastPoseLandmarksRef.current)
+          ) {
+            setHandLandmarks(newHandmarks); // Update only if there's a change
+            // console.log(newLandmarks);
+            lastHandLandmarksRef.current = newHandmarks; // Update the ref with the new landmarks
+          }
+        }
+        if (results.leftHandLandmarks) {
+          // Check if the new pose landmarks are different from the last ones
+          const newHandmarks = results.leftHandLandmarks;
+          if (
+            JSON.stringify(newHandmarks) !==
+            JSON.stringify(lastPoseLandmarksRef.current)
+          ) {
+            setHandLandmarks(newHandmarks); // Update only if there's a change
+            // console.log(newLandmarks);
+            lastHandLandmarksRef.current = newHandmarks; // Update the ref with the new landmarks
           }
         }
       }
@@ -72,7 +100,7 @@ export const HolisticModel: React.FC<Props> = ({
     return () => {
       cameraRef.current?.stop();
     };
-  }, [setPoseLandmarks]);
+  }, [setPoseLandmarks, setHandLandmarks]);
 
   return <video ref={videoRef} autoPlay playsInline muted hidden />;
 };

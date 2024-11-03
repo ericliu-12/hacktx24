@@ -93,7 +93,7 @@ const VrmModelViewer: React.FC<Props> = ({ landmarks, videoRef }) => {
 
     // camera
     const orbitCamera = new THREE.PerspectiveCamera(35, w / h, 0.1, 1000);
-    orbitCamera.position.set(0.0, 1.4, 2.7);
+    orbitCamera.position.set(0.0, 1.4, 2.9);
 
     // controls
     const orbitControls = new OrbitControls(orbitCamera, renderer.domElement);

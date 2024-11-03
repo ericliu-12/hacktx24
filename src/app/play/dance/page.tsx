@@ -74,7 +74,7 @@ export default function Page() {
             </div>
           </Link>
 
-          <MainComponent setUserPose={setUserPose} />
+          <MainComponent setUserPose={setUserPose} setHandPose={setUserPose} />
         </div>
         <VideoPlayer
           selected={"/songs/hot_to_go.mp4"}
