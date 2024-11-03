@@ -10,6 +10,8 @@ import {
   verificationTokens,
 } from "~/server/db/schema";
 
+import { query } from "~/lib/db"; // Import your database client
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -40,7 +42,7 @@ export const authConfig = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     /**
      * ...add more providers here.
@@ -66,5 +68,24 @@ export const authConfig = {
         id: user.id,
       },
     }),
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        // Check if the user exists in the database
+        const existingUser = await query(
+          "SELECT * FROM users WHERE googleId = $1",
+          [account.id],
+        );
+
+        if (existingUser.rows.length === 0) {
+          // If user does not exist, insert them
+          await query(
+            "INSERT INTO users (googleId, email, name) VALUES ($1, $2, $3)",
+            [account.id, user.email, user.name],
+          );
+        }
+      }
+
+      return true;
+    },
   },
 } satisfies NextAuthConfig;
