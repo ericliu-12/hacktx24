@@ -30,7 +30,7 @@ const VrmModelViewer: React.FC<Props> = ({
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     const w = 500;
     const h = window.innerHeight;
-    const aspect = 600 / 400;
+
     renderer.setSize(w, h);
     renderer.setPixelRatio(window.devicePixelRatio);
     containerRef.current?.appendChild(renderer.domElement);
