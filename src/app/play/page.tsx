@@ -36,6 +36,24 @@ export default function Page() {
     }
   ];
 
+  const songs = [
+    {
+      location: "/songs/hot_to_go.mp4",
+      title: "HOT TO GO!",
+      artist: "Chappell Roan"
+    },
+    {
+      location: "/songs/espress.mp4",
+      title: "Espresso",
+      artist: "Sabrina Carpenter"
+    },
+    {
+      location: "/songs/apt.mp4",
+      title: "APT.",
+      artist: "Rosé and Bruno Mars"
+    },
+  ]
+
   return (
     <div className="flex h-screen w-screen overflow-hidden">
       <Link href="/">

@@ -12,3 +12,8 @@ body {
         --radius: 0.5rem;
     }
 }
+
+nextjs-portal {
+    display: none;
+  }
+  

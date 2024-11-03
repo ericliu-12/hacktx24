@@ -3,6 +3,7 @@
 import Link from "next/link";
 import ModelCard from "../_components/ModelCard";
 import { useState } from "react";
+import { Button } from "~/components/ui/button";
 import useSound from "use-sound";
 
 export default function Page() {
@@ -15,6 +16,14 @@ export default function Page() {
         <div>
           <h1 className="mb-4 text-xl">Set up your profile</h1>
         </div>
+        <Link href="/">
+          <div
+            onClick={() => backSound()}
+            className="fixed left-6 top-6 z-50 hover:translate-y-1"
+          >
+            Back
+          </div>
+        </Link>
         <div className="flex flex-col items-center justify-center">
           <h1 className="mb-4">Nice choice!</h1>
           <div className="flex">
@@ -46,7 +55,7 @@ export default function Page() {
       <div className="flex flex-col">
         <h1 className="mb-4">Choose your avatar</h1>
         <div className="flex">
-          <ModelCard
+        <ModelCard
             name="Suki"
             path="/models/suki.vrm"
             setAvatar={setAvatar}
