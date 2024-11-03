@@ -8,22 +8,22 @@ import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 import { animateVRM } from "./Animate";
 
 interface Props {
-  poseLandmarks: any; // Add the type according to your data structure
+  landmarks: any; // Add the type according to your data structure
   videoRef: React.RefObject<HTMLVideoElement>;
   containerRef: React.RefObject<HTMLDivElement>;
 }
 
 const VrmModelViewer: React.FC<Props> = ({
-  poseLandmarks,
+  landmarks,
   videoRef,
   containerRef,
 }) => {
   const currentVrmRef = useRef<any>(null);
-  const poseLandmarksRef = useRef<any>(null);
+  const landmarksRef = useRef<any>(null);
 
   useEffect(() => {
-    poseLandmarksRef.current = poseLandmarks;
-  }, [poseLandmarks]);
+    landmarksRef.current = landmarks;
+  }, [landmarks]);
 
   useEffect(() => {
     // renderer
@@ -92,10 +92,10 @@ const VrmModelViewer: React.FC<Props> = ({
       requestAnimationFrame(animate);
 
       const currentVrm = currentVrmRef.current; // Access the current VRM from the ref
-      const poseLandmarks = poseLandmarksRef.current;
+      const landmarks = landmarksRef.current;
 
-      if (currentVrm && poseLandmarks) {
-        animateVRM(currentVrm, poseLandmarks, videoRef);
+      if (currentVrm && landmarks) {
+        animateVRM(currentVrm, landmarks, videoRef);
         currentVrm.update(clock.getDelta());
       }
       renderer.render(scene, orbitCamera);

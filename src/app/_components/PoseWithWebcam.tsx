@@ -1,8 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
-// PoseWithWebcam.tsx
 "use client";
-// PoseWithWebcam.tsx
 import { useEffect, useRef } from "react";
 import * as cam from "@mediapipe/camera_utils";
 
@@ -85,7 +83,6 @@ const PoseWithWebcam: React.FC = () => {
             // Draw circles at each body landmark
             results.poseLandmarks.forEach((landmark: any, index: number) => {
               if (index >= 11 && index <= 28) {
-                // Skip face landmarks (indices < 11)
                 canvasCtx.beginPath();
                 canvasCtx.arc(
                   landmark.x * canvasRef.current.width,

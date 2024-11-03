@@ -3,91 +3,22 @@
 import React, { useEffect, useRef } from "react";
 import * as hol from "@mediapipe/holistic";
 import * as cam from "@mediapipe/camera_utils";
-import * as draw from "@mediapipe/drawing_utils";
 
 interface Props {
-  setPoseLandmarks: (landmarks: any) => void; // Function to update landmarks
+  setLandmarks: any;
+  setPoseLandmarks: (landmarks: any) => void;
 }
 
-export const HolisticModel: React.FC<Props> = ({ setPoseLandmarks }) => {
+export const HolisticModel: React.FC<Props> = ({
+  setLandmarks,
+  setPoseLandmarks,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  // const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraRef = useRef<cam.Camera | null>(null);
 
-  // const drawResults = (results: any) => {
-  //   const videoElement = videoRef.current;
-  //   const canvasElement = canvasRef.current;
-  //   const ctx = canvasElement?.getContext("2d");
-
-  //   if (videoElement && canvasElement && ctx) {
-  //     // Clear the canvas before drawing
-  //     ctx.save();
-  //     ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-  //     // Use `Mediapipe` drawing functions
-  //     draw.drawConnectors(ctx, results.poseLandmarks, hol.POSE_CONNECTIONS, {
-  //       color: "#00cff7",
-  //       lineWidth: 4,
-  //     });
-  //     draw.drawLandmarks(ctx, results.poseLandmarks, {
-  //       color: "#ff0364",
-  //       lineWidth: 2,
-  //     });
-  //     draw.drawConnectors(
-  //       ctx,
-  //       results.faceLandmarks,
-  //       hol.FACEMESH_TESSELATION,
-  //       {
-  //         color: "#C0C0C070",
-  //         lineWidth: 1,
-  //       },
-  //     );
-  //     if (results.faceLandmarks && results.faceLandmarks.length === 478) {
-  //       //draw pupils
-  //       draw.drawLandmarks(
-  //         ctx,
-  //         [results.faceLandmarks[468], results.faceLandmarks[468 + 5]],
-  //         {
-  //           color: "#ffe603",
-  //           lineWidth: 2,
-  //         },
-  //       );
-  //     }
-  //     draw.drawConnectors(
-  //       ctx,
-  //       results.leftHandLandmarks,
-  //       hol.HAND_CONNECTIONS,
-  //       {
-  //         color: "#eb1064",
-  //         lineWidth: 5,
-  //       },
-  //     );
-  //     draw.drawLandmarks(ctx, results.leftHandLandmarks, {
-  //       color: "#00cff7",
-  //       lineWidth: 2,
-  //     });
-  //     draw.drawConnectors(
-  //       ctx,
-  //       results.rightHandLandmarks,
-  //       hol.HAND_CONNECTIONS,
-  //       {
-  //         color: "#22c3e3",
-  //         lineWidth: 5,
-  //       },
-  //     );
-  //     draw.drawLandmarks(ctx, results.rightHandLandmarks, {
-  //       color: "#ff0364",
-  //       lineWidth: 2,
-  //     });
-  //   }
-  // };
-
-  const onResults = (results: any) => {
-    // Draw landmark guides
-    // drawResults(results);
-    // Animate model
-    setPoseLandmarks(results);
-  };
+  // Use a ref to store the last pose landmarks
+  const lastPoseLandmarksRef = useRef<any>(null);
+  const lastUpdateTime = useRef<number>(Date.now());
 
   useEffect(() => {
     const holistic = new hol.Holistic({
@@ -103,7 +34,24 @@ export const HolisticModel: React.FC<Props> = ({ setPoseLandmarks }) => {
       refineFaceLandmarks: true,
     });
 
-    holistic.onResults(onResults);
+    holistic.onResults((results: any) => {
+      const currentTime = Date.now();
+      if (results.poseLandmarks && currentTime - lastUpdateTime.current >= 10) {
+        setLandmarks(results);
+        if (results.poseLandmarks) {
+          // Check if the new pose landmarks are different from the last ones
+          const newLandmarks = results.poseLandmarks;
+          if (
+            JSON.stringify(newLandmarks) !==
+            JSON.stringify(lastPoseLandmarksRef.current)
+          ) {
+            setPoseLandmarks(newLandmarks); // Update only if there's a change
+            // console.log(newLandmarks);
+            lastPoseLandmarksRef.current = newLandmarks; // Update the ref with the new landmarks
+          }
+        }
+      }
+    });
 
     if (videoRef.current) {
       cameraRef.current = new cam.Camera(videoRef.current, {
@@ -122,16 +70,77 @@ export const HolisticModel: React.FC<Props> = ({ setPoseLandmarks }) => {
 
     // Cleanup on component unmount
     return () => {
-      cameraRef.current?.stop(); // Use the ref to stop the camera
+      cameraRef.current?.stop();
     };
-  }, []);
+  }, [setPoseLandmarks]);
 
-  return (
-    <>
-      <div style={{ position: "absolute", top: 0, left: 0 }}>
-        <video ref={videoRef} autoPlay playsInline muted hidden />
-        {/* <canvas ref={canvasRef} width={320} height={240} /> */}
-      </div>
-    </>
-  );
+  return <video ref={videoRef} autoPlay playsInline muted hidden />;
 };
+
+// const drawResults = (results: any) => {
+//   const videoElement = videoRef.current;
+//   const canvasElement = canvasRef.current;
+//   const ctx = canvasElement?.getContext("2d");
+
+//   if (videoElement && canvasElement && ctx) {
+//     // Clear the canvas before drawing
+//     ctx.save();
+//     ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+//     // Use `Mediapipe` drawing functions
+//     draw.drawConnectors(ctx, results.poseLandmarks, hol.POSE_CONNECTIONS, {
+//       color: "#00cff7",
+//       lineWidth: 4,
+//     });
+//     draw.drawLandmarks(ctx, results.poseLandmarks, {
+//       color: "#ff0364",
+//       lineWidth: 2,
+//     });
+//     draw.drawConnectors(
+//       ctx,
+//       results.faceLandmarks,
+//       hol.FACEMESH_TESSELATION,
+//       {
+//         color: "#C0C0C070",
+//         lineWidth: 1,
+//       },
+//     );
+//     if (results.faceLandmarks && results.faceLandmarks.length === 478) {
+//       //draw pupils
+//       draw.drawLandmarks(
+//         ctx,
+//         [results.faceLandmarks[468], results.faceLandmarks[468 + 5]],
+//         {
+//           color: "#ffe603",
+//           lineWidth: 2,
+//         },
+//       );
+//     }
+//     draw.drawConnectors(
+//       ctx,
+//       results.leftHandLandmarks,
+//       hol.HAND_CONNECTIONS,
+//       {
+//         color: "#eb1064",
+//         lineWidth: 5,
+//       },
+//     );
+//     draw.drawLandmarks(ctx, results.leftHandLandmarks, {
+//       color: "#00cff7",
+//       lineWidth: 2,
+//     });
+//     draw.drawConnectors(
+//       ctx,
+//       results.rightHandLandmarks,
+//       hol.HAND_CONNECTIONS,
+//       {
+//         color: "#22c3e3",
+//         lineWidth: 5,
+//       },
+//     );
+//     draw.drawLandmarks(ctx, results.rightHandLandmarks, {
+//       color: "#ff0364",
+//       lineWidth: 2,
+//     });
+//   }
+// };
