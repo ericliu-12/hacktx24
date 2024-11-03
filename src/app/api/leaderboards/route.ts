@@ -10,21 +10,21 @@ export async function GET() {
         await query(`
             CREATE VIEW view_combined_dance_sessions AS
             SELECT 
-                ds.id,
-                ds.user_id,
-                u.name,
-                u.email,
-                ds.song,
-                CONCAT(
-                    EXTRACT(HOUR FROM ds.dance_duration), ' hours, ', 
-                    EXTRACT(MINUTE FROM ds.dance_duration), ' minutes'
-                ) AS dance_duration,
-                ds.average_score,
-                ds.timestamp
+            ds.id,
+            ds.user_id,
+            u.name,
+            u.email,
+            ds.song,
+            CONCAT(
+            LPAD(EXTRACT(MINUTE FROM ds.dance_duration)::text, 2, '0'), ':',
+            LPAD(ROUND(EXTRACT(SECOND FROM ds.dance_duration))::text, 2, '0')
+            ) AS dance_duration,
+            ds.average_score,
+            ds.timestamp
             FROM 
-                dance_sessions AS ds
+            dance_sessions AS ds
             JOIN 
-                users AS u ON ds.user_id = u.id;
+            users AS u ON ds.user_id = u.id;
         `);
         
         const result = await query(

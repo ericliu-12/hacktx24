@@ -168,7 +168,7 @@ const VrmModelViewer: React.FC<Props> = ({ landmarks, videoRef }) => {
   }, [modelPath]); // Re-run this effect if modelPath changes
 
   return (
-    <div>
+    <div className="mt-20 ml-6">
       {loading && <p>Loading model...</p>}
       <div ref={mountRef} />
     </div>

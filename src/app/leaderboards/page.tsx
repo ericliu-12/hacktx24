@@ -1,5 +1,7 @@
 "use client";
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import useSound from 'use-sound';
 
 interface LeaderboardItem {
     id: number;
@@ -15,6 +17,7 @@ interface LeaderboardItem {
 export default function Leaderboards() {
     const [data, setData] = useState<LeaderboardItem[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [backSound] = useSound("/audio/select.wav")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,33 +55,47 @@ export default function Leaderboards() {
 
     return (
         <div>
-            <h1>Leaderboards</h1>
-            <table>
+            <Link href="/">
+                <div
+                    onClick={() => backSound()}
+                    className="fixed left-6 top-6 z-50 hover:translate-y-1"
+                >
+                    Back
+                </div>
+            </Link>
+
+            <h1 className='mt-20 ml-6 text-4xl'>Leaderboards</h1>
+            <table className='m-10 w-11/12'>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>User ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Song</th>
-                        <th>Dance Duration</th>
-                        <th>Average Score</th>
-                        <th>Timestamp</th>
+                        <th className='text-start'>Rank</th>
+                        <th className='text-start'>Name</th>
+                        <th className='text-start'>Email</th>
+                        <th className='text-start'>Song</th>
+                        <th className='text-start'>Dance Duration</th>
+                        <th className='text-start'>Score</th>
+                        <th className='text-start'>Timestamp</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((item: LeaderboardItem) => (
                         <tr key={item.id}>
                             <td>{item.id}</td>
-                            <td>{item.user_id}</td>
                             <td>{item.name}</td>
                             <td>{item.email}</td>
-                            <td>{item.song}</td>
+                            <td>{item.song.replaceAll('.mp4', '').replaceAll('/songs/', '').replaceAll('_', ' ')}</td>
                             <td>{item.dance_duration}</td> {/* Display the interval directly */}
                             <td>{item.average_score}</td>
                             <td>
                                 {/* Directly use the timestamp since it's already a string */}
-                                {new Date(item.timestamp).toLocaleString()}
+                                {new Intl.DateTimeFormat('en-US', {
+                                    year: '2-digit',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: false
+                                }).format(new Date(item.timestamp))}
                             </td>
                         </tr>
                     ))}
