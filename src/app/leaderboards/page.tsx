@@ -7,12 +7,9 @@ interface LeaderboardItem {
     name: string;
     email: string;
     song: string;
-    dance_duration: string;
+    dance_duration: string; // Keep as string for display
     average_score: number;
-    timestamp: {
-        seconds: number;
-        nanoseconds: number;
-    };
+    timestamp: string; // Change to string to directly accept the timestamp format from PostgreSQL
 }
 
 export default function Leaderboards() {
@@ -27,7 +24,7 @@ export default function Leaderboards() {
                 if (!response.ok) {
                     throw new Error("Leaderboard data could not be fetched.");
                 }
-                // console.log(response.json());
+
                 const result = await response.json();
                 console.log(result);
                 setData(result);
@@ -36,8 +33,6 @@ export default function Leaderboards() {
                 setError("Failed to fetch leaderboard data.");
             }
         };
-
-        
 
         fetchData();
     }, []);
@@ -79,11 +74,11 @@ export default function Leaderboards() {
                             <td>{item.name}</td>
                             <td>{item.email}</td>
                             <td>{item.song}</td>
-                            <td>{item.dance_duration}</td>
+                            <td>{item.dance_duration}</td> {/* Display the interval directly */}
                             <td>{item.average_score}</td>
                             <td>
-                                {/* Convert the timestamp to a readable format */}
-                                {new Date(item.timestamp.seconds * 1000).toLocaleString()}
+                                {/* Directly use the timestamp since it's already a string */}
+                                {new Date(item.timestamp).toLocaleString()}
                             </td>
                         </tr>
                     ))}

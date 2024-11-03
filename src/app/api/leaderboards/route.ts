@@ -5,7 +5,7 @@ export async function GET() {
     try {
         await query(`
             DROP VIEW IF EXISTS view_combined_dance_sessions;
-        `)
+        `);
 
         await query(`
             CREATE VIEW view_combined_dance_sessions AS
@@ -15,7 +15,10 @@ export async function GET() {
                 u.name,
                 u.email,
                 ds.song,
-                ds.dance_duration,
+                CONCAT(
+                    EXTRACT(HOUR FROM ds.dance_duration), ' hours, ', 
+                    EXTRACT(MINUTE FROM ds.dance_duration), ' minutes'
+                ) AS dance_duration,
                 ds.average_score,
                 ds.timestamp
             FROM 
@@ -30,15 +33,15 @@ export async function GET() {
 
         return NextResponse.json(
             result.rows,
-            {status : 200}
+            { status: 200 }
         );
         
-    } catch(error) {
+    } catch (error) {
         console.error("Error obtaining values for leaderboard.");
 
         return NextResponse.json(
-            {error : "Failed to obtain table data."},
-            {status : 500}
+            { error: "Failed to obtain table data." },
+            { status: 500 }
         );
     }
 }
