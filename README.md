@@ -22,5 +22,3 @@ Through Arcadia, we learned how to combine front-end technologies with machine l
 
 ## What's next for Arcadia
 Next, we plan to expand Arcadia by adding more games and refining the gesture recognition algorithms for even smoother gameplay. We envision adding multiplayer modes and potentially incorporating VR support to create a fully immersive retro arcade experience.
-
-## What's next for Arcadia
