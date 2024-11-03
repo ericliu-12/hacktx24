@@ -18,18 +18,27 @@ export default async function Home() {
     void api.post.getLatest.prefetch();
   }
 
-  return <>
-    <ThreeScene />
+  return (
+    <>
+      <ThreeScene />
 
-    <div className="fixed top-1/2 -translate-y-1/2 right-6">
-      <p>Welcome, {session?.user ? session.user.name : "Guest!"}</p>
+      <div className="fixed right-6 top-1/2 -translate-y-1/2">
+        <p>Welcome, {session?.user ? session.user.name : "Guest!"}</p>
 
-      {!session?.user ?
-        <Link href="/api/auth/signin">
-          <button>Sign In</button>
-        </Link>
-        : <button>Play</button>}
-    </div>
-
-  </>;
+        {!session?.user ? (
+          <Link href="/api/auth/signin">
+            <button>Sign In</button>
+          </Link>
+        ) : (
+          <div>
+            <Link href="/api/auth/signout">
+              <button>Sign Out</button>
+            </Link>
+            <br />
+            <button>Play</button>
+          </div>
+        )}
+      </div>
+    </>
+  );
 }
