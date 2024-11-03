@@ -17,29 +17,5 @@ export default async function Home() {
     void api.post.getLatest.prefetch();
   }
 
-  return (
-    <div>
-      {/* <CaptureExampleAction /> */}
-      {/* <CompareAction /> */}
-      {/* <ThreeScene /> */}
-      <WordHuntGame />
-      <h1>Hack TX</h1>
-    </div>
-    // <div>
-    //   <h1>Hack TX</h1>
-
-    //   {/* Display the employees data */}
-    //   {employeesData ? (
-    //     <ul>
-    //       {employeesData.map((employee: { id: number; name: string }) => (
-    //         <li key={employee.id}>
-    //           ID: {employee.id}, Name: {employee.name}
-    //         </li>
-    //       ))}
-    //     </ul>
-    //   ) : (
-    //     <p>No data available</p>
-    //   )}
-    // </div>
-  );
+  return <div>HackTX</div>;
 }
