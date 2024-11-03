@@ -1,8 +1,15 @@
+import Link from "next/link";
 import ModelCard from "../_components/ModelCard";
 
 export default function Page() {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center text-left">
+      <Link href="/">
+        <div className="hover:translate-y-1 fixed top-6 left-6">
+          Back
+        </div>
+      </Link>
+
       <div>
         <h1 className="mb-4 text-xl">Set up your profile</h1>
       </div>

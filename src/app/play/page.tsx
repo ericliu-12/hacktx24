@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import useSound from "use-sound";
 import { useState } from "react";
 import {
   Carousel,
@@ -14,6 +15,8 @@ import {
 export default function Page() {
 
   const [current, setCurrent] = useState<number>(0);
+  const [selectSound] = useSound('/audio/select2.wav')
+  const [playSound] = useSound('/audio/play.wav')
   const games = [
     {
       href: "/play/dance", cover: "/twice_album.png", title: "Dance", description: "Dance and stuff"
@@ -34,7 +37,7 @@ export default function Page() {
           className="h-auto w-[40vw] mb-10 mt-10"
         />
 
-        <div className="bg-white relative w-[40vw] h-[50vh] mt-5">
+        <div className="bg-transparent relative w-[40vw] h-[50vh] mt-5">
           <Image
             src="/top_left_description_frame.png"
             alt="Top left description"
@@ -43,7 +46,7 @@ export default function Page() {
             className="absolute -top-[80px] -left-[72px]"
           />
 
-          <div className="w-full h-[37.5vh] overflow-y-auto break-words text-black p-4">
+          <div className="w-full h-[37.5vh] overflow-y-auto break-words text-white p-4">
             {games[current]?.description}
           </div>
 
@@ -99,17 +102,21 @@ export default function Page() {
             ))}
           </CarouselContent>
 
-          <div onClick={() => setCurrent(current - 1)}>
+          <div onClick={() => {
+            setCurrent(current - 1)
+            selectSound()}}>
             <CarouselPrevious />
           </div>
-          <div onClick={() => setCurrent(current + 1)}>
+          <div onClick={() => {
+            setCurrent(current + 1)
+            selectSound()}}>
             <CarouselNext />
           </div>
         </Carousel>
 
         <Link href={games[current]?.href}>
-          <button className="mt-4 hover:scale-105 active:scale-95">
-            <img src="./select_button.png" alt="select_button" className="w-[20vw] h-auto" />
+          <button onClick={playSound} className="mt-4 hover:scale-105 active:scale-95">
+            <Image src="/select_button.png" alt="Select" width={500} height={500} style={{width: '20vw', height: 'auto' }}  />
           </button>
         </Link>
       </div>

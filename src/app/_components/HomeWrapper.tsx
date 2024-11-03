@@ -12,6 +12,7 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
   const [route, setRoute] = useState("");
   const [shown, setShown] = useState(true);
   const [playSound] = useSound('/audio/play.wav')
+  const [selectSound] = useSound('/audio/select.wav')
 
   useEffect(() => {
     if (!startAnim) return;
@@ -50,10 +51,15 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
                 >
                   Start
                 </button>
-                <button className="hover:translate-y-1">Stats</button>
-                <button className="hover:translate-y-1">Leaderboards</button>
+                <button onClick={() => {
+                  selectSound();
+                }} className="hover:translate-y-1">Stats</button>
+                <button onClick={() => {
+                  selectSound();
+                }} className="hover:translate-y-1">Leaderboards</button>
                 <button
                   onClick={() => {
+                    selectSound();
                     setStartAnim(true);
                     setRoute("/profile");
                   }}
