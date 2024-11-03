@@ -35,16 +35,18 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
             exit={{ opacity: 0 }}
             className="fixed right-10 top-1/2 -translate-y-1/2 bg-black/75 p-4 shadow-md"
           >
-            <p className="text-3xl">
-              Welcome, {session?.user ? session.user.name : "Guest!"}
+            <p className="text-3xl mb-3">
+              Welcome, {session?.user ? session.user.name : "Guest"}!
             </p>
 
             {!session?.user ? (
-              <Link href="/api/auth/signin">
-                <button>Sign In</button>
-              </Link>
+                <button onClick={() => {
+                  playSound();
+                  setStartAnim(true);
+                  setRoute("/api/auth/signin");
+                }} className="hover:translate-y-1">Sign In</button>
             ) : (
-              <div className="space-x-4">
+              <div className="space-x-8">
                 <button
                   onClick={() => {
                     playSound();
@@ -84,6 +86,16 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
                   className="hover:translate-y-1"
                 >
                   Profile
+                </button>
+                <button
+                  onClick={() => {
+                    selectSound();
+                    setStartAnim(true);
+                    setRoute("/api/auth/signout");
+                  }}
+                  className="hover:translate-y-1"
+                >
+                  Sign Out
                 </button>
               </div>
             )}
