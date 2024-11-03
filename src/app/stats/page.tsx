@@ -67,7 +67,7 @@ export default function Stats() {
 
 
             {isLoading ? <p>Loading...</p> :
-                stats ? <div>
+                stats.length > 0 ? <div>
                     <p>Personal Best - {Math.max(...stats.map(stat => parseFloat(stat.average_score))).toFixed(2)} secs</p>
                     <p>Games Played - {Object.keys(stats).length}</p>
                     <p>Longest Dance Duration - {Math.max(...stats.map(stat => stat.dance_duration.seconds))}</p>
