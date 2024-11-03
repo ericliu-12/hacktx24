@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { xor } from 'three/webgpu';
 
 function lerp(x: number, y: number, a: number) {
     return (1 - easeInOutSine(a)) * x + easeInOutSine(a) * y;
@@ -38,7 +39,7 @@ const ThreeScene: React.FC = () => {
         requestAnimationFrame(animate);
         if (cabinetRef.current && isIdleRef.current) {
 
-            cabinetRef.current.rotation.y += 0.01; // Adjust the rotation speed as desired
+            cabinetRef.current.rotation.y += 0.005; // Adjust the rotation speed as desired
         }
         renderer.render(scene, camera);
     }
@@ -52,46 +53,78 @@ const ThreeScene: React.FC = () => {
 
         if (cabinet) {
             let counter = 0
-            const posX = cabinet.position.x;
-            const posY = cabinet.position.y;
-            const posZ = cabinet.position.z;
-            const rotX = cabinet.rotation.x;
-            const rotY = cabinet.rotation.y;
+            const camX = camera.position.x
+            const camY = camera.position.y
+            const camZ = camera.position.z
+            const camRot = cabinet.rotation.x;
+            const cabRot = cabinet.rotation.y;
             const interval = setInterval(() => {
                 if (counter >= 1) {
                     clearInterval(interval);
                     return;
                 }
                 if (cabinet) {
-                    cabinet.position.x = lerp(posX, 0, counter)
-                    cabinet.position.y = lerp(posY, -3.67, counter)
-                    cabinet.position.z = lerp(posZ, 3.6, counter)
-                    cabinet.rotation.x = lerp(rotX, 0.18, counter)
-                    cabinet.rotation.y = lerp(rotY, piMultiple(rotY), counter)
+                    camera.position.set(lerp(camX, -3, counter), lerp(camY, 1.3, counter), lerp(camZ, 0.5, counter))
+                    cabinet.rotation.y = lerp(cabRot, piMultiple(cabRot), counter)
+                    camera.rotation.x = lerp(camRot, -0.15, counter)
                 }
                 counter += (1 / (FPS * DURATION));
             }, 1000 / FPS)
         }
     }
 
+    const handleScroll = (event: Event) => {
+        const delta = (event as WheelEvent).deltaY;
+        if (delta < 0) {
+            camera.position.z = Math.max(camera.position.z + (delta * 0.01), 4);
+        } else {
+            camera.position.z = Math.min(camera.position.z + (delta * 0.01), 6);
+        }
+        console.log(camera.position.z)
+    }
+
     useEffect(() => {
         renderer.setPixelRatio(window.devicePixelRatio * 2);
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
         mountRef.current?.appendChild(renderer.domElement);
 
         const loader = new GLTFLoader();
 
         camera.position.set(0, 0, 5)
-        const light = new THREE.AmbientLight(0xffffff, 1); // White light with intensity
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
-        scene.add(light);
-        scene.add(directionalLight);
+        const light = new THREE.AmbientLight(0xffffff, 0.3); // White light with intensity
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2)
+        const spotlight = new THREE.SpotLight(
+            0xFFFFFF, 10.0, 10.0, (Math.PI / 4), 1, 0
+        )
+        dirLight.position.set(1, 2, 0)
+        dirLight.target.position.set(0, 0, 0)
+        dirLight.castShadow = true;
+
+        spotlight.position.set(0, 2, 1)
+        spotlight.target.position.set(0, 0, 0)
+        spotlight.castShadow = true;
+
+        scene.add(light)
+        scene.add(dirLight)
+        scene.add(dirLight.target)
+        scene.add(spotlight)
+        scene.add(spotlight.target)
 
         loader.load('/cabinet.glb', (glb) => {
             cabinet = glb.scene; // Cast to Group
+            cabinet.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    child.castShadow = true; // Allow the cabinet to cast shadows
+                    child.receiveShadow = true; // Ensure cabinet receives shadows too
+                }
+            });
             scene.add(cabinet);
-            cabinet.position.set(-4, -2.5, -1)
+            cabinet.position.set(-3, -1.5, 0)
             cabinet.rotation.y = -(Math.PI / 2);
+            cabinet.scale.set(0.7, 0.7, 0.7)
 
             // Store the cabinet reference for later use
             cabinetRef.current = cabinet;
@@ -99,8 +132,13 @@ const ThreeScene: React.FC = () => {
 
         loader.load('/box.glb', (glb) => {
             floor = glb.scene; // Cast to Group
+            floor.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    child.receiveShadow = true; // Ensure the floor receives shadows
+                }
+            });
             scene.add(floor);
-            floor.position.set(0, 0, 0)
+            floor.position.set(0, -2.5, 0)
             floor.rotation.set(0, 0, 0)
 
 
@@ -108,11 +146,18 @@ const ThreeScene: React.FC = () => {
         });
         animate();
 
+       
+
+        window.addEventListener('wheel', handleScroll);
+        window.addEventListener('click', beginAnimation)
+
         const currMount = mountRef.current;
 
         return () => {
             renderer.dispose();
             currMount?.removeChild(renderer.domElement);
+            window.removeEventListener('wheel', handleScroll)
+            window.removeEventListener('click', beginAnimation)
         };
     }, []);
 
