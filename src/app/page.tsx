@@ -1,12 +1,8 @@
-import Link from "next/link";
-
-import { LatestPost } from "~/app/_components/post";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-import PoseWithWebcam from "./_components/PoseWithWebcam";
+import ThreeScene from "./_components/ThreeScreen";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
   const session = await auth();
 
   if (session?.user) {
@@ -15,7 +11,11 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <PoseWithWebcam />
+      <ThreeScene />
+
+      <div className="text-red-500 fixed top-1/2 -translate-y-1/2 right-0">
+        Play
+      </div>
     </HydrateClient>
   );
 }
