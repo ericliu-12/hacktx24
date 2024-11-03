@@ -2,9 +2,10 @@ import "~/styles/globals.css";
 
 import { Press_Start_2P } from "next/font/google";
 import { type Metadata } from "next";
-import localFont from "next/font/local"
+import localFont from "next/font/local";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { SessionProvider } from "next-auth/react";
 
 const pressStart = Press_Start_2P({
   display: "swap",
@@ -13,7 +14,8 @@ const pressStart = Press_Start_2P({
 });
 
 const ka = localFont({
-  src: "../../public/fonts/ka1.ttf"})
+  src: "../../public/fonts/ka1.ttf",
+});
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -27,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${ka.className}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <SessionProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </SessionProvider>
       </body>
     </html>
   );
