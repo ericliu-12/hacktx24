@@ -13,6 +13,7 @@ interface MainComponentProps {
 export const MainComponent = ({ setUserPose }: MainComponentProps) => {
   const [landmarks, setLandmarks] = useState<any>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const vrmContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="flex">
