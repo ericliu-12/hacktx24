@@ -16,25 +16,36 @@ export default function Page() {
 
   const [current, setCurrent] = useState<number>(0);
   const [selectSound] = useSound('/audio/select2.wav')
+  const [backSound] = useSound('/audio/select.wav')
   const [playSound] = useSound('/audio/play.wav')
   const games = [
     {
-      href: "/play/dance", cover: "/twice_album.png", title: "Dance", description: "Dance and stuff"
+      href: "/play/dance", cover: "/leapdance.png", title: "Just Leap", description: [
+        "Match the moves!",
+        "Follow the dance steps on screen to score points. Keep up with the beat and hit every move for a high score!"
+      ]
     },
     {
-      href: "/play/wordhunt", cover: "/twice_album.png", title: "Word Hunt", description: "Word hunt and stuff"
+      href: "/play/wordhunt", cover: "/wordhunt.png", title: "Word Hunt", description: [
+        "Find the hidden words!",
+        "Search through the grid and uncover all the target words before time runs out. Test your vocabulary and beat the clock!"
+      ]
     }
   ]
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
+      <Link href="/">
+        <div onClick={() => backSound()} className="fixed z-50 left-6 top-6 hover:translate-y-1">Back</div>
+      </Link>
+
       {/* First Column */}
       <div className="flex flex-col justify-center items-center w-1/2 relative">
         <Image
           src="/choose_your_game_text.png"
           alt="Choose your game"
           width={0} height={0} sizes="40vw"
-          className="h-auto w-[40vw] mb-10 mt-10"
+          className="h-auto w-[40vw] mb-10 mt-16"
         />
 
         <div className="bg-transparent relative w-[40vw] h-[50vh] mt-5">
@@ -46,8 +57,10 @@ export default function Page() {
             className="absolute -top-[80px] -left-[72px]"
           />
 
-          <div className="w-full h-[37.5vh] overflow-y-auto break-words text-white p-4">
-            {games[current]?.description}
+          <div className="w-full h-[37.5vh] space-y-4 overflow-y-auto break-words text-white p-4">
+            {Array.isArray(games[current]?.description) && games[current]?.description.map((sentence, index) => (
+              <p key={index}>{sentence}</p>
+            ))}
           </div>
 
           <Image
@@ -80,12 +93,12 @@ export default function Page() {
             src="/bottom_left_thumbnail_frame.png"
             alt="Bottom left thumbnail frame"
             width={400} height={400}
-            className="absolute -left-[20px] -bottom-14" />
+            className="absolute -left-[20px] z-40 -bottom-14" />
           <Image
             src="/top_right_thumbnail_frame.png"
             alt="top right thumbnail frame"
             width={400} height={400}
-            className="absolute -top-[66px] -right-[20px] " />
+            className="absolute -top-[66px] z-40 -right-[20px] " />
 
           <CarouselContent>
             {games.map((game, index) => (
@@ -114,8 +127,8 @@ export default function Page() {
           </div>
         </Carousel>
 
-        <Link href={games[current]?.href}>
-          <button onClick={playSound} className="mt-4 hover:scale-105 active:scale-95">
+        <Link href={games[current]?.href ?? "/"}>
+          <button onClick={() => playSound()} className="mt-4 hover:scale-105 active:scale-95">
             <Image src="/select_button.png" alt="Select" width={500} height={500} style={{width: '20vw', height: 'auto' }}  />
           </button>
         </Link>

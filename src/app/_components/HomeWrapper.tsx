@@ -20,6 +20,11 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
     setShown(false);
   }, [startAnim]);
 
+  useEffect(() => {
+    if (!leaderAnim) return;
+    setShown(false);
+  }, [leaderAnim]);
+
   return (
     <>
       <ThreeScene startAnim={startAnim} leaderAnim={leaderAnim} route={route} />
@@ -53,6 +58,8 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
                 <button
                   onClick={() => {
                     selectSound();
+                    setStartAnim(true);
+                    setRoute("/stats");
                   }}
                   className="hover:translate-y-1"
                 >
@@ -62,6 +69,7 @@ export default function HomeWrapper({ session }: { session: Session | null }) {
                   onClick={() => {
                     selectSound();
                     setLeaderAnim(true);
+                    setRoute("/leaderboards");
                   }}
                   className="hover:translate-y-1"
                 >

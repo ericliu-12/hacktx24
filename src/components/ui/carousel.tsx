@@ -4,8 +4,7 @@ import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
-import { motion } from 'framer-motion'
-
+import Image from "next/image"
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
 
@@ -215,7 +214,8 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         {...props}
       >
         <div className="hover:scale-110 active:scale-90">
-          <img src="/left_arrow.png" alt="left arrow" className="w-full h-full" />
+          <Image className="hover:cursor-pointer z-50"
+            src="/left_arrow.png" alt="Left" width={500} height={500} style={{ width: 'full', height: 'full' }} />
         </div>
         <span className="sr-only">Previous slide</span>
       </Button>
@@ -245,7 +245,8 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         {...props}
       >
         <div className="hover:scale-110 active:scale-90">
-          <img src="/right_arrow.png" alt="right arrow" className="w-full h-full" />
+          <Image className="hover:cursor-pointer z-50"
+            src="/right_arrow.png" alt="Right" width={500} height={500} style={{ width: 'full', height: 'full' }} />
         </div>
         <span className="sr-only">Next slide</span>
       </Button>
