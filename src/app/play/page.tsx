@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -26,16 +27,19 @@ export default function Page() {
     <div className="flex h-screen w-screen overflow-hidden">
       {/* First Column */}
       <div className="flex flex-col justify-center items-center w-1/2 relative">
-        <img
-          src="./choose_your_game_text.png"
-          alt="choose_your_game"
+        <Image
+          src="/choose_your_game_text.png"
+          alt="Choose your game"
+          width={0} height={0} sizes="40vw"
           className="h-auto w-[40vw] mb-10 mt-10"
         />
 
         <div className="bg-white relative w-[40vw] h-[50vh] mt-5">
-          <img
-            src="./top_left_description_frame.png"
-            alt="top_left_description"
+          <Image
+            src="/top_left_description_frame.png"
+            alt="Top left description"
+            width={500} height={500}
+            style={{ width: 'auto', height: 'auto' }}
             className="absolute -top-[80px] -left-[72px]"
           />
 
@@ -43,32 +47,53 @@ export default function Page() {
             {games[current]?.description}
           </div>
 
-          <img
-            src="./bottom_right_description_frame.png"
-            alt="bottom_right_description"
+          <Image
+            src="/bottom_right_description_frame.png"
+            alt="Bottom right description"
+            width={500} height={500}
+            style={{ width: 'auto', height: 'auto' }}
             className="absolute -bottom-[65px] -right-[76px]"
           />
         </div>
 
-        <img
-          src="./hacktx_sprite.png"
-          alt="hacktx_sprite"
-          className="h-auto w-[25vw] mt-20"
-        />
+        <Image
+          src="/hacktx_sprite.png"
+          alt="HackTX Sprite"
+          width={0} height={500} sizes="25vw"
+          style={{ width: 'auto' }}
+          className="mt-20" />
       </div>
 
       {/* Second Column */}
       <div className="flex flex-col items-center justify-center w-1/2">
-        <img src="clouds.png" alt="clouds" className="h-auto w-[50vw]" />
+        <Image
+          src="/clouds.png"
+          alt="clouds"
+          width={500} height={500}
+          style={{ width: '40vw', height: 'auto' }} />
 
         <Carousel className="relative w-[25vw] mb-10 mt-20 h-auto">
-          <img src="bottom_left_thumbnail_frame.png" alt="bottom_left_thumbnail_frame" className="absolute -left-[5px] -bottom-14 w-[400px] h-[400px]" />
-          <img src="top_right_thumbnail_frame.png" alt="top_right_thumbnail_frame" className="absolute -top-[66px] -right-[3px] w-[400px] h-[400px]" />
+          <Image
+            src="/bottom_left_thumbnail_frame.png"
+            alt="Bottom left thumbnail frame"
+            width={400} height={400}
+            className="absolute -left-[20px] -bottom-14" />
+          <Image
+            src="/top_right_thumbnail_frame.png"
+            alt="top right thumbnail frame"
+            width={400} height={400}
+            className="absolute -top-[66px] -right-[20px] " />
+
           <CarouselContent>
             {games.map((game, index) => (
               <CarouselItem key={index}>
                 <div className="flex items-center justify-center h-full">
-                  <img src={games[current]?.cover} alt="twice_album" className="w-[20vw] h-auto align-middle" />
+                  <Image
+                    src={game.cover}
+                    alt="Page cover"
+                    width={500} height={500}
+                    style={{ width: '20vw', height: 'auto' }}
+                    className="align-middle" />
                 </div>
               </CarouselItem>
             ))}
