@@ -60,10 +60,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as poseModule from "@mediapipe/pose";
+import { getSession } from "next-auth/react";
 
 interface Props {
   selected: string;
-  userId: number;
   setVideoPose: (landmarks: any) => void;
   similarityScore: number | null;
   isTracking: boolean;
@@ -72,17 +72,43 @@ interface Props {
 
 export default function VideoPlayer({
   selected,
-  userId,
   setVideoPose,
   similarityScore,
   isTracking,
   setIsTracking,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [scoreSum, setScoreSum] = useState<number>(0);
   const [scoreCount, setScoreCount] = useState<number>(0);
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const session = await getSession();
+      if (session?.user?.email) {
+        try {
+          const response = await fetch("/api/getUserIdByEmail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: session.user.email }),
+          });
+          const data = await response.json();
+          if (response.ok) {
+            setUserId(data.userId);
+            console.log(data.userId);
+          } else {
+            console.error("Error fetching user ID:", data.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      } else {
+        console.error("Session email not found");
+      }
+    };
 
+    fetchUserId();
+  }, []);
   useEffect(() => {
     const loadPose = async () => {
       const pose = new poseModule.Pose({

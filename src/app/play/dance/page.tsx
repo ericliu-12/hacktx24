@@ -93,7 +93,6 @@ export default function Page() {
         similarityScore={similarityScore}
         isTracking={isTracking} // Pass tracking state as a prop
         setIsTracking={setIsTracking} // Pass setIsTracking to control tracking from VideoPlayer
-        userId={0}
       />
     </div>
   );
